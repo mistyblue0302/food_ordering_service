@@ -13,7 +13,7 @@
 ## 개발 규칙
 
 - [Coding Convention](https://github.com/mistyblue0302/food_ordering_service/wiki/Convention#coding-convention)
-- [Git Commit Message Convention](https://github.com/mistyblue0302/food-map/wiki/Convention#commit-message-convention)
+- [Git Commit Message Convention](https://github.com/mistyblue0302/food_ordering_service/wiki/Convention#commit-message-convention)
 - [Git Branch 전략](https://github.com/mistyblue0302/food_ordering_service/wiki/Convention#git-branch-%EC%A0%84%EB%9E%B5)
 - 테스트 커버리지 : 70% 이상 
 

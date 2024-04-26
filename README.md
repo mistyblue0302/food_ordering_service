@@ -19,7 +19,7 @@
 
 ## 주요 기능
 
-- [기능 정리](https://github.com/mistyblue0302/food-map/wiki#%EA%B8%B0%EB%8A%A5)
+- [기능 정리](https://github.com/mistyblue0302/food_ordering_service/wiki)
 - [Use Case](https://github.com/mistyblue0302/food-map/wiki/Use-Case)
 
 ## ERD

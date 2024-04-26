@@ -24,6 +24,6 @@
 
 ## ERD
 
-![img](https://github.com/mistyblue0302/TIL/blob/main/Image/Untitled.png)
+![img](https://github.com/mistyblue0302/TIL/blob/main/Image/er-diagram.png)
 
 https://dbdiagram.io/d/food_ordering_service-6627a91f03593b6b61be8bd0

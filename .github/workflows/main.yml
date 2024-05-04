@@ -27,4 +27,4 @@ jobs:
         run : chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build용
+        run: ./gradlew build

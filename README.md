@@ -7,6 +7,7 @@
 - Gradle
 - JPA
 - MySQL
+- H2
 - GitHub Actions
 - JaCoCo
 

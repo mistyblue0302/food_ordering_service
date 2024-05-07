@@ -9,7 +9,7 @@ import org.springframework.web.client.RestClient;
 public class RestClientConfig {
 
     @Bean
-    public RestClient restClientConfig() {
+    public RestClient getRestClient() {
         RestClient restClient = RestClient.builder()
             .baseUrl("localhost")
             .defaultHeader(HttpHeaders.AUTHORIZATION)

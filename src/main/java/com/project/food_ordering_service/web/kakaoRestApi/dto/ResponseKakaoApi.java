@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class RequestKakaoApi {
+public class ResponseKakaoApi {
 
     private Meta meta;
 

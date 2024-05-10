@@ -1,4 +1,4 @@
-package com.project.food_ordering_service.global.api.config;
+package com.project.food_ordering_service.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

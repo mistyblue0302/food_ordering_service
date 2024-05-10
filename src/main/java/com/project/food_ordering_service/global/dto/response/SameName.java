@@ -1,4 +1,4 @@
-package com.project.food_ordering_service.web.kakaoRestApi.dto;
+package com.project.food_ordering_service.global.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

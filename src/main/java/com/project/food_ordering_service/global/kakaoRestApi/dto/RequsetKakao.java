@@ -1,4 +1,4 @@
-package com.project.food_ordering_service.web.kakaoRestApi.dto;
+package com.project.food_ordering_service.global.kakaoRestApi.dto;
 
 import lombok.Data;
 

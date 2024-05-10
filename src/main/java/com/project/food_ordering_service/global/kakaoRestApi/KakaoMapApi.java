@@ -1,7 +1,7 @@
-package com.project.food_ordering_service.web.kakaoRestApi;
+package com.project.food_ordering_service.global.kakaoRestApi;
 
-import com.project.food_ordering_service.web.kakaoRestApi.dto.RequsetKakao;
-import com.project.food_ordering_service.web.kakaoRestApi.dto.ResponseKakaoApi;
+import com.project.food_ordering_service.global.kakaoRestApi.dto.RequsetKakao;
+import com.project.food_ordering_service.global.kakaoRestApi.dto.ResponseKakaoApi;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

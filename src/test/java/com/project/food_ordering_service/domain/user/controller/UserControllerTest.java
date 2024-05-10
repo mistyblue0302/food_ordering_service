@@ -30,18 +30,10 @@ class UserControllerTest {
     UserService userService;
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
     MockMvc mockMvc;
 
     @Autowired
     ObjectMapper objectMapper;
-
-    @AfterEach
-    public void down() {
-        userRepository.deleteAll();
-    }
 
     @Test
     @DisplayName("회원가입 성공 테스트")
@@ -57,8 +49,7 @@ class UserControllerTest {
             .email(request.getEmail())
             .build();
 
-        Mockito.when(userService.addUser(any(UserSaveRequest.class)))
-            .thenReturn(savedUser);
+        Mockito.when(userService.addUser(any(UserSaveRequest.class))).thenReturn(savedUser);
 
         //when
         mockMvc.perform(post("/users")

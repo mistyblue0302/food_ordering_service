@@ -1,0 +1,17 @@
+spring:
+  datasource :
+    url: jdbc:h2:mem:test
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    show-sql: true
+    format_sql: true
+    hibernate:
+      ddl-auto: create # 실행시마다 테이블 자동 생성
+    database-platform: org.hibernate.dialect.H2Dialect
+
+logging:
+  level:
+    org.hibernate.SQL: debug

@@ -1,7 +1,6 @@
 package com.project.food_ordering_service.domain.user.service;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.BDDMockito.*;
 
 import com.project.food_ordering_service.domain.user.dto.UserSaveRequest;

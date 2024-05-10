@@ -27,10 +27,10 @@ public class KakaoMapApi {
     public ResponseKakaoApi getSearchPlaceByKeyword(RequsetKakao requsetKakao) {
 
         URI url = UriComponentsBuilder.fromHttpUrl(kakaoHost + kakaoURL)
-            .queryParam("category_group_code", "CE7")
+            .queryParam("category_group_code", "FD6")
             .queryParam("x", requsetKakao.getX())
             .queryParam("y", requsetKakao.getY())
-            .queryParam("radius", 1000) // 1km
+            .queryParam("radius", 2000) // 1km
             .build()
             .toUri();
 

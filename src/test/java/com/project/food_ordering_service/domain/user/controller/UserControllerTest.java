@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.food_ordering_service.domain.user.dto.UserSaveRequest;
 import com.project.food_ordering_service.domain.user.dto.UserSaveResponse;
+import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
 import com.project.food_ordering_service.domain.user.service.UserService;
 import org.junit.jupiter.api.AfterEach;
@@ -49,16 +50,18 @@ class UserControllerTest {
     @DisplayName("회원가입 성공 테스트")
     void addUserTest() throws Exception {
         //given
-        UserSaveResponse userSaveResponse = UserSaveResponse.builder()
+        UserSaveRequest request = createUser();
+
+        User savedUser = User.builder()
             .id(1L)
-            .loginId("testId")
-            .userName("testUserName")
-            .phoneNumber("010-1234-5678")
-            .email("test@gmail.com")
+            .loginId(request.getLoginId())
+            .userName(request.getUserName())
+            .phoneNumber(request.getPhoneNumber())
+            .email(request.getEmail())
             .build();
 
-        Mockito.when(userService.addUser(any()))
-            .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(userSaveResponse));
+        Mockito.when(userService.addUser(any(UserSaveRequest.class)))
+            .thenReturn(savedUser);
 
         //when
         mockMvc.perform(post("/users")

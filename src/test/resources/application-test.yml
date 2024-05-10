@@ -12,6 +12,7 @@ spring:
     # SQL의 가독성 높임(JPA 구현체인 Hibernate 동작)
     properties:
       hibernate.format_sql: true
+    database: h2
     database-platform: org.hibernate.dialect.H2Dialect
 
 logging:

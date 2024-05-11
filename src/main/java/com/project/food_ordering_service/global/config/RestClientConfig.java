@@ -1,4 +1,4 @@
-package com.project.food_ordering_service.global.api.config;
+package com.project.food_ordering_service.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,10 +11,8 @@ public class RestClientConfig {
     @Bean
     public RestClient getRestClient() {
         RestClient restClient = RestClient.builder()
-            .baseUrl("localhost")
             .defaultHeader(HttpHeaders.AUTHORIZATION)
             .build();
         return restClient;
     }
-
 }

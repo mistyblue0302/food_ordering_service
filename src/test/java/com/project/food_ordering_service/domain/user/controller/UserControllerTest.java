@@ -12,14 +12,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+/**
+ * @WebMvcTest : 스프링 애플리케이션 전체를 로드할 필요없이 특정 컨트롤러 레이어에 관련된 빈들만 로드하므로 테스트 속도가 빠르다.
+ * @MockBean : mock 객체를 생성하고 주입하는데 사용된다. 특정 컴포넌트가 다른 컴포넌트에 의존하고 있을 때 외부 의존성을 목 객체로 대체하는데 사용된다.
+ */
+
+@WebMvcTest(UserController.class)
 class UserControllerTest {
 
     @MockBean

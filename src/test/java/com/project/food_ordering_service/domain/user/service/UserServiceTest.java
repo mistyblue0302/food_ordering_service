@@ -15,6 +15,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+/**
+ * @ExtendWith(MockitoExtension.class) : JUnit5에서 Mockito를 사용하는 테스트 클래스에서 Mockito의 기능을 활용할 수 있도록 해주는
+ * 애노테이션으로, 테스트 클래스에 포함된 Mockito 관련 애노테이션들(@Mock, @InjectMocks, @Spy, @Captor 등)이 동작하게 되어, mock 객체를
+ * 생성하고 설정하거나 주입하는 등의 작업을 보다 편리하게 할 수 있다.
+ */
+
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 

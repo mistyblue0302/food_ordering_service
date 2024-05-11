@@ -11,7 +11,6 @@ public class RestClientConfig {
     @Bean
     public RestClient getRestClient() {
         RestClient restClient = RestClient.builder()
-            .baseUrl("localhost")
             .defaultHeader(HttpHeaders.AUTHORIZATION)
             .build();
         return restClient;

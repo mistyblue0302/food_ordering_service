@@ -1,5 +1,7 @@
-package com.project.food_ordering_service.global.kakaoRestApi.dto;
+package com.project.food_ordering_service.global.dto.response;
 
+import com.project.food_ordering_service.global.dto.response.Documents;
+import com.project.food_ordering_service.global.dto.response.Meta;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseKakaoApi {
+public class KakaoMapApiResponse {
 
     private Meta meta;
 

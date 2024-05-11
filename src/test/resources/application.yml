@@ -4,3 +4,14 @@ spring:
     url: jdbc:mysql://localhost:3306/food_ordering_service?serverTimezone=Asia/Seoul
     username: root
     password: 1215
+
+  jpa:
+    show-sql: true
+
+    # DB의 고유 기능 사용 가능
+    hibernate:
+      ddl-auto: create
+
+    # SQL의 가독성 높임(JPA 구현체인 Hibernate 동작)
+    properties:
+      hibernate.format_sql: true

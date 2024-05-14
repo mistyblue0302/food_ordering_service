@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * @ExtendWith(MockitoExtension.class) : JUnit5에서 Mockito를 사용하는 테스트 클래스에서 Mockito의 기능을 활용할 수 있도록 해주는
@@ -30,6 +31,9 @@ class UserServiceTest {
     @Mock
     UserRepository userRepository;
 
+    @Mock
+    PasswordEncoder passwordEncoder;
+
     @Test
     @DisplayName("중복 이메일 예외 발생 테스트")
     void DuplicatedEmailExceptionTest() throws Exception {
@@ -38,7 +42,7 @@ class UserServiceTest {
             .willReturn(true);
 
         //when
-        assertThatThrownBy(() -> userService.addUser(createUser()))
+        assertThatThrownBy(() -> userService.signUp(createUser()))
             //then
             .isInstanceOf(DuplicatedEmailException.class);
     }
@@ -51,7 +55,7 @@ class UserServiceTest {
             .willReturn(true);
 
         //when
-        assertThatThrownBy(() -> userService.addUser(createUser()))
+        assertThatThrownBy(() -> userService.signUp(createUser()))
             //then
             .isInstanceOf(DuplicatedLoginIdException.class);
     }
@@ -65,7 +69,7 @@ class UserServiceTest {
         given(userRepository.existsByLoginId(anyString()))
             .willReturn(false);
 
-        userService.addUser(createUser());
+        userService.signUp(createUser());
 
         //then
         then(userRepository).should(times(1)).save(any(User.class));

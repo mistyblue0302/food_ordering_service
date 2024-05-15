@@ -3,6 +3,7 @@ package com.project.food_ordering_service.domain.user.dto;
 import com.project.food_ordering_service.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.antlr.v4.runtime.misc.NotNull;
 
 /**
@@ -11,6 +12,7 @@ import org.antlr.v4.runtime.misc.NotNull;
  */
 
 @Getter
+@Setter
 @Builder
 public class UserSaveRequest {
 
@@ -19,6 +21,9 @@ public class UserSaveRequest {
 
     @NotNull
     private String userName;
+
+    @NotNull
+    private String password;
 
     @NotNull
     private String phoneNumber;

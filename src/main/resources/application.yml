@@ -19,4 +19,5 @@ spring:
 jwt:
   access_expiration_time: 3600
   refresh_expiration_time: 1209600
+  # Base64로 인코딩된 비밀 키
   secret: 64461f01e1af406da538b9c48d801ce59142452199ff112fb5404c8e7e98e4ff

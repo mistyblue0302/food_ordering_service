@@ -1,5 +1,7 @@
 package com.project.food_ordering_service.global.config;
 
+import com.project.food_ordering_service.global.utils.jwt.JwtAuthorizationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,7 +13,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity(debug = true)
+@RequiredArgsConstructor
 public class SecurityConfiguration {
+
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -25,9 +30,10 @@ public class SecurityConfiguration {
                          * 다른 모든 요청은 인증이 필요합니다. (새로운 사용자 등록에 대해선 인증 x)
                          */
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/auth/login").permitAll()
                         .anyRequest().authenticated()
                 )
+                .addFilterBefore(jwtAuthorizationFilter, JwtAuthorizationFilter.class)
                 .build();
     }
 }

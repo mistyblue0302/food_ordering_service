@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 /**
- * JWT 인증 처리를 담당하는 클래스
+ * JWT 인증 객체를 담당하는 클래스로 인증된 사용자의 정보를 가지고 있다.
  */
 
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {

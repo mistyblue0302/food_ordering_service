@@ -10,6 +10,12 @@ import java.util.Date;
 /**
  * JWT 토큰에서 클레임과 관련된 정보를 추출하는 클래스
  */
+
+/**
+ * @Slf4j :  로깅을 위한 추상화 라이브러리
+ * @RequiredArgsConstructor : final 필드의 생성자를 생성
+ */
+
 @Slf4j
 @RequiredArgsConstructor
 public class JwtHolder {

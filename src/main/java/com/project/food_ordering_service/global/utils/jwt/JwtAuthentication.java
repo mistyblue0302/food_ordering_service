@@ -1,8 +1,5 @@
 package com.project.food_ordering_service.global.utils.jwt;
 
-
-import lombok.Getter;
-
 import java.util.Date;
 
 /**
@@ -12,6 +9,5 @@ import java.util.Date;
  * expirationTime : 토큰의 만료시간 저장
  */
 
-@Getter
 public record JwtAuthentication(String token, Long id, Date expirationTime) {
 }

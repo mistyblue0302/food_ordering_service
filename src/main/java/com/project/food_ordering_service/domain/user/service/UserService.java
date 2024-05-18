@@ -1,14 +1,10 @@
 package com.project.food_ordering_service.domain.user.service;
 
-import com.project.food_ordering_service.domain.user.dto.LoginRequest;
-import com.project.food_ordering_service.domain.user.dto.LoginResponse;
 import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.exception.DuplicatedEmailException;
 import com.project.food_ordering_service.domain.user.dto.UserSaveRequest;
 import com.project.food_ordering_service.domain.user.exception.DuplicatedLoginIdException;
-import com.project.food_ordering_service.domain.user.exception.UserNotFoundException;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,19 +35,5 @@ public class UserService {
         userSaveRequest.setPassword(passwordEncoder.encode(userSaveRequest.getPassword()));
         User savedUser = userRepository.save(userSaveRequest.toEntity());
         return savedUser;
-    }
-
-    @Transactional(readOnly = true)
-    public LoginResponse login(LoginRequest loginRequest) {
-        List<User> users = userRepository.findAll();
-        System.out.println(users);
-        System.out.println(loginRequest);
-
-        User userByEmailAndPassword = userRepository.findByEmailAndPassword(
-            loginRequest.getEmail(),
-            loginRequest.getPassword())
-            .orElseThrow(() -> new UserNotFoundException());
-
-        return LoginResponse.from(userByEmailAndPassword);
     }
 }

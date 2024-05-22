@@ -10,9 +10,9 @@ public record UserInfo(Long id,
 
     public static UserInfo from(User user) {
         return new UserInfo(
-            user.getId()
-            , user.getEmail()
-            , user.getUserName()
-            , user.getRole());
+            user.getId(),
+            user.getEmail(),
+            user.getUserName(),
+            user.getRole());
     }
 }

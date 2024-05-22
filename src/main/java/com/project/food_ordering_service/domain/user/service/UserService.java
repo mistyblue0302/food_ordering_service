@@ -32,7 +32,9 @@ public class UserService {
             throw new DuplicatedLoginIdException();
         }
 
-        userSaveRequest.setPassword(passwordEncoder.encode(userSaveRequest.getPassword()));
+        String encodedPassword = passwordEncoder.encode(userSaveRequest.getPassword());
+        userSaveRequest.setPassword(encodedPassword);
+
         User savedUser = userRepository.save(userSaveRequest.toEntity());
         return savedUser;
     }

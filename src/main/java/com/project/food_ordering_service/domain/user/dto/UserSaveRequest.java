@@ -31,10 +31,15 @@ public class UserSaveRequest {
     @NotNull
     private String email;
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public User toEntity() {
         return User.builder()
             .loginId(this.loginId)
             .userName(this.userName)
+            .password(this.password)
             .phoneNumber(this.phoneNumber)
             .email(this.email)
             .build();

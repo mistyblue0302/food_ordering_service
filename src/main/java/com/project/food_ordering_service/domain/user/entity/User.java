@@ -2,9 +2,12 @@ package com.project.food_ordering_service.domain.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,8 +22,9 @@ import lombok.NoArgsConstructor;
  * @AllArgsConstructor : 모든 필드를 받는 생성자를 만들어준다.
  */
 
-@Entity
 @Getter
+@Entity
+@Table(name = "USERS")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,10 +42,13 @@ public class User {
 
     private String password;
 
-    @Column(name="phone_number")
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

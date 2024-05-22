@@ -21,8 +21,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * JWT 토큰에 대한 검증을 수행
- * 토큰의 유효성 검사 및 사용자 인증 정보를 설정
+ * JWT 토큰에 대한 검증을 수행 토큰의 유효성 검사 및 사용자 인증 정보를 설정
  */
 
 /**
@@ -34,16 +33,18 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtAuthorizationFilter extends OncePerRequestFilter { // OnecePerRequestFilter : 한 요청당 한 번 실행 보장
+public class JwtAuthorizationFilter extends
+    OncePerRequestFilter { // OnecePerRequestFilter : 한 요청당 한 번 실행 보장
 
     private final JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+        FilterChain filterChain) throws ServletException, IOException {
 
         String authorizationHeader = request.getHeader("Authorization");
 
-        /** JWT가 헤더에 있는 경우
+        /**
          * Jwt를 사용한 인증은 Authorization 헤더에 Bearer라는 접두사를 붙여 토큰을 포함
          * 예시 -> Authorization: Bearer eyJhbGciOiJIUzI1N...
          */
@@ -60,7 +61,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter { // OnecePerRe
         try {
             JwtHolder jwtHolder = new JwtHolder(jwtUtil.parseToken(token), token);
             // 토큰 파싱 후 요청이 리프레시 토큰 기반인지, 엑세스 토큰 기반인지 확인
-            if (isRefreshTokenBasedRequest(request, jwtHolder) || isAccessTokenBasedRequest(request, jwtHolder)) {
+            if (isRefreshTokenBasedRequest(request, jwtHolder) || isAccessTokenBasedRequest(request,
+                jwtHolder)) {
                 setAuthenticationFromJwt(jwtHolder); // 인증 정보 설정
             }
         } catch (MalformedJwtException | SignatureException e) { // 유효하지 않은 토큰 예외 처리
@@ -93,15 +95,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter { // OnecePerRe
 
     // 리프레시 토큰이 필요한 요청인지 확인(로그아웃 또는 토큰 재발급을 위한 요청)
     private boolean isRequiredRefreshToken(HttpServletRequest request) {
-        return request.getRequestURI().endsWith("/logout") || request.getRequestURI().endsWith("/reissue");
+        return request.getRequestURI().endsWith("/logout") || request.getRequestURI()
+            .endsWith("/reissue");
     }
 
     // JWT 토큰에서 인증정보 설정
     private void setAuthenticationFromJwt(JwtHolder jwtHolder) {
         // JwtHolder 객체를 통해 토큰에 필요한 정보를 가져온다. (토큰 문자열, 사용자 식별, 만료시간)
-        JwtAuthentication jwtAuthentication = new JwtAuthentication(jwtHolder.getToken(), jwtHolder.getUserId(), jwtHolder.getExpirationTime());
-        JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(jwtAuthentication, List.of(
-                new SimpleGrantedAuthority(Role.CLIENT.toString())));
+        JwtAuthentication jwtAuthentication = new JwtAuthentication(jwtHolder.getToken(),
+            jwtHolder.getUserId(), jwtHolder.getExpirationTime());
+        JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(
+            jwtAuthentication, List.of(
+            new SimpleGrantedAuthority(Role.CLIENT.toString())));
 
         SecurityContextHolder.getContext().setAuthentication(jwtAuthenticationToken);
     }

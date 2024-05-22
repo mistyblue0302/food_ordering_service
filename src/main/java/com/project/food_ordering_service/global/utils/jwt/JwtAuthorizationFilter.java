@@ -42,14 +42,14 @@ public class JwtAuthorizationFilter extends
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
 
-        String authorizationHeader = request.getHeader("Authorization");
+        String authorizationHeader = request.getHeader(JwtProperties.HEADER);
 
         /**
          * Jwt를 사용한 인증은 Authorization 헤더에 Bearer라는 접두사를 붙여 토큰을 포함
          * 예시 -> Authorization: Bearer eyJhbGciOiJIUzI1N...
          */
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7);
+        if (authorizationHeader != null && authorizationHeader.startsWith(JwtProperties.TOKEN_PREFIX)) {
+            String token = authorizationHeader.substring(JwtProperties.TOKEN_PREFIX_LENGTH);
             // 토큰을 추출하고 proceedAuthentication() 메소드를 호출해 인증 진행
             proceedAuthentication(request, token);
         }
@@ -102,8 +102,7 @@ public class JwtAuthorizationFilter extends
     // JWT 토큰에서 인증정보 설정
     private void setAuthenticationFromJwt(JwtHolder jwtHolder) {
         // JwtHolder 객체를 통해 토큰에 필요한 정보를 가져온다. (토큰 문자열, 사용자 식별, 만료시간)
-        JwtAuthentication jwtAuthentication = new JwtAuthentication(jwtHolder.getToken(),
-            jwtHolder.getUserId(), jwtHolder.getExpirationTime());
+        JwtAuthentication jwtAuthentication = new JwtAuthentication(jwtHolder);
         JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(
             jwtAuthentication, List.of(
             new SimpleGrantedAuthority(Role.CLIENT.toString())));

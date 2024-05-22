@@ -48,23 +48,23 @@ public class JwtUtil {
 
     // 사용자 id로 액세스 토큰을 생성
     public String createAccessToken(Long id) {
-        return createToken(id, "access", accessTokenExpTime);
+        return createToken(id, JwtProperties.ACCESS_TOKEN_NAME, accessTokenExpTime);
     }
 
     // 사용자 id로 리프레시 토큰을 생성
     public String createRefreshToken(Long id) {
-        return createToken(id, "refresh", refreshTokenExpTime);
+        return createToken(id, JwtProperties.REFRESH_TOKEN_NAME, refreshTokenExpTime);
     }
 
     // 사용자 id, 토큰 타입, 만료 시간을 사용해 JWT 토큰을 생성
     private String createToken(Long id, String tokenType, long expirationTime) {
         Claims claims = Jwts.claims(); // Jwt 클레임 생성
-        claims.put("userId", id.toString()); // 클레임에 사용자 id값 추가
+        claims.put(JwtProperties.USER_ID, id.toString()); // 클레임에 사용자 id값 추가
 
         ZonedDateTime publishedTime = ZonedDateTime.now(); // 현재 시간
 
         return Jwts.builder()
-                .setHeaderParam("token", tokenType)
+                .setHeaderParam(JwtProperties.TOKEN_TYPE, tokenType)
                 .setClaims(claims)
                 .setIssuedAt(Date.from(publishedTime.toInstant()))
                 .setExpiration(Date.from(publishedTime.plusSeconds(expirationTime).toInstant()))

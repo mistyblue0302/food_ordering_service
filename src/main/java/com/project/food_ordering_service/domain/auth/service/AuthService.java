@@ -33,29 +33,33 @@ public class AuthService {
     public LoginResponse login(LoginRequest loginRequest) {
 
         User user = userRepository.findByEmail(
-                        loginRequest.getEmail())
-                .orElseThrow(() -> new UserNotFoundException());
+                loginRequest.getEmail())
+            .orElseThrow(() -> new UserNotFoundException());
 
         if (!passwordEncoder.matches(loginRequest.password, user.getPassword())) {
             throw new WrongPasswordException();
         }
 
-        String accessToken = jwtUtil.createAccessToken(user.getId());
-        String refreshToken = jwtUtil.createRefreshToken(user.getId());
-
-        return LoginResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        return createLoginResponse(user.getId());
     }
 
     @Transactional
     public void logout(JwtAuthentication jwtAuthentication) {
         RefreshToken logoutRefreshToken = RefreshToken.builder()
-                .token(jwtAuthentication.token())
-                .expiredDate(jwtAuthentication.expirationTime())
-                .build();
+            .token(jwtAuthentication.getToken())
+            .expiredDate(jwtAuthentication.getExpirationTime())
+            .build();
 
         authRepository.save(logoutRefreshToken);
+    }
+
+    private LoginResponse createLoginResponse(Long userId) {
+        String accessToken = jwtUtil.createAccessToken(userId);
+        String refreshToken = jwtUtil.createRefreshToken(userId);
+
+        return LoginResponse.builder()
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .build();
     }
 }

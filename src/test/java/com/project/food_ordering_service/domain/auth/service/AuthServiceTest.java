@@ -2,12 +2,10 @@ package com.project.food_ordering_service.domain.auth.service;
 
 import com.project.food_ordering_service.domain.auth.dto.LoginRequest;
 import com.project.food_ordering_service.domain.auth.dto.LoginResponse;
-import com.project.food_ordering_service.domain.auth.repository.AuthRepository;
 import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.exception.UserNotFoundException;
 import com.project.food_ordering_service.domain.user.exception.WrongPasswordException;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
-import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import com.project.food_ordering_service.global.utils.jwt.JwtUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

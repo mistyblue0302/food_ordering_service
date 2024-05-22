@@ -36,7 +36,7 @@ public class AuthService {
                 loginRequest.getEmail())
             .orElseThrow(() -> new UserNotFoundException());
 
-        if (!passwordEncoder.matches(loginRequest.password, user.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new WrongPasswordException();
         }
 

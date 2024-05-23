@@ -5,6 +5,7 @@ import com.project.food_ordering_service.global.dto.response.KakaoMapApiResponse
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -17,6 +18,7 @@ public class KakaoMapApi {
 
     private final RestClient restClient;
 
+    @Value("${kakao.secret}")
     private String kakaoSecretKey = "a7a2f38c20deae484401731c080a2117";
 
     public static final String kakaoHeader = "KakaoAK ";

@@ -11,7 +11,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @Component
-
 public class KakaoMapApi {
 
     private final RestClient restClient;

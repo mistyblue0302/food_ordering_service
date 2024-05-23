@@ -22,6 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.util.UriComponentsBuilder;
 
+/**
+ * @RestClientTest : 외부 api 대상 API를 MOCKING 해줍니다
+ */
 @RestClientTest(KakaoMapApi.class)
 class KakaoMapApiTest {
 
@@ -34,50 +37,9 @@ class KakaoMapApiTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    private static final String JSON_RESPONSE = """
-        {
-            "meta": {
-                "total_count": 5014,
-                "pageable_count": 45,
-                "is_end": false,
-                "same_name": null
-            },
-            "documents": [
-                {
-                    "id": "1065693087",
-                    "place_name": "금돼지식당",
-                    "category_name": "음식점 > 한식 > 육류,고기",
-                    "category_group_code": "FD6",
-                    "category_group_name": "음식점",
-                    "phone": "0507-1307-8750",
-                    "address_name": "서울 중구 신당동 370-69",
-                    "road_address_name": "서울 중구 다산로 149",
-                    "x": 127.01167974212188,
-                    "y": 37.55705875134064,
-                    "place_url": "http://place.map.kakao.com/1065693087",
-                    "distance": "0"
-                },
-                {
-                    "id": "21722308",
-                    "place_name": "만포막국수",
-                    "category_name": "음식점 > 한식 > 국수",
-                    "category_group_code": "FD6",
-                    "category_group_name": "음식점",
-                    "phone": "02-2235-1357",
-                    "address_name": "서울 중구 신당동 425-18",
-                    "road_address_name": "서울 중구 동호로14길 2",
-                    "x": 127.01031863376261,
-                    "y": 37.555830097762694,
-                    "place_url": "http://place.map.kakao.com/21722308",
-                    "distance": "181"
-                }
-            ]
-        }
-        """;
-
 
     @Test
-    @DisplayName("확인중")
+    @DisplayName("카카오 맵 테스트")
     void getSearchPlaceByKeyword() throws JsonProcessingException {
         //given
         Meta meta = Meta.builder()
@@ -149,6 +111,7 @@ class KakaoMapApiTest {
         ResponseEntity<KakaoMapApiResponse> result = kakaoMapApi.getSearchPlaceByKeyword(request);
 
         Assertions.assertNotNull(result.getBody());
+
         Assertions.assertEquals(5014, result.getBody().getMeta().getTotalCount());
     }
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class KakaoMapApiRequest {
 
-    private final int x;
-    private final int y;
+    private final double x;
+    private final double y;
 
 }

@@ -1,9 +1,11 @@
 package com.project.food_ordering_service.global.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class Documents {
 
     @JsonProperty("id")

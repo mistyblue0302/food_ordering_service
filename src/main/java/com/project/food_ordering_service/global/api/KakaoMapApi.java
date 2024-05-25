@@ -19,7 +19,7 @@ public class KakaoMapApi {
     private final RestClient restClient;
 
     @Value("${kakao.secret}")
-    private String kakaoSecretKey = "a7a2f38c20deae484401731c080a2117";
+    private String kakaoSecretKey;
 
     public static final String kakaoHeader = "KakaoAK ";
 

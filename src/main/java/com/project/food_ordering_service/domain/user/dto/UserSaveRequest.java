@@ -16,19 +16,19 @@ import lombok.Setter;
 @Builder
 public class UserSaveRequest {
 
-    @NotBlank
+    @NotBlank(message = "{loginId.notBlank}")
     private String loginId;
 
-    @NotBlank
+    @NotBlank(message = "{userName.notBlank}")
     private String userName;
 
-    @NotBlank
+    @NotBlank(message = "{password.notBlank}")
     private String password;
 
-    @NotBlank
+    @NotBlank(message = "{phoneNumber.notBlank}")
     private String phoneNumber;
 
-    @NotBlank
+    @NotBlank(message = "{email.notBlank}")
     private String email;
 
     public void setPassword(String password) {

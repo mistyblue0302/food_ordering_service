@@ -13,10 +13,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class KakaoMapApi {
 
     private final RestClient restClient;
+
+    public KakaoMapApi(RestClient restClient) {
+        this.restClient = restClient;
+    }
 
     @Value("${kakao.secret}")
     private String kakaoSecretKey;

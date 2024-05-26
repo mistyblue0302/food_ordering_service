@@ -1,6 +1,7 @@
 package com.project.food_ordering_service.domain.auth.service;
 
 import com.project.food_ordering_service.domain.auth.entity.RefreshToken;
+import com.project.food_ordering_service.domain.auth.exception.UnacceptedAuthrizationException;
 import com.project.food_ordering_service.domain.auth.repository.AuthRepository;
 import com.project.food_ordering_service.domain.auth.dto.LoginRequest;
 import com.project.food_ordering_service.domain.auth.dto.LoginResponse;
@@ -51,6 +52,17 @@ public class AuthService {
             .build();
 
         authRepository.save(logoutRefreshToken);
+    }
+
+    @Transactional
+    public LoginResponse reissue(JwtAuthentication jwtAuthentication) {
+        // 토큰을 추출하여 이미 로그아웃 처리된 토큰인지 확인
+        if(authRepository.existsByToken(jwtAuthentication.getToken())) {
+            throw new UnacceptedAuthrizationException();
+        }
+
+        // 로그아웃 처리되지 않은 토큰이라면 새로운 엑세스 토큰과 리프레시 토큰을 생성하여 반환
+        return createLoginResponse(jwtAuthentication.getId());
     }
 
     private LoginResponse createLoginResponse(Long userId) {

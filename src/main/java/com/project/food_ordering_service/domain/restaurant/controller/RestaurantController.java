@@ -3,14 +3,14 @@ package com.project.food_ordering_service.domain.restaurant.controller;
 import com.project.food_ordering_service.global.api.KakaoMapApi;
 import com.project.food_ordering_service.global.dto.request.KakaoMapApiRequest;
 import com.project.food_ordering_service.global.dto.response.KakaoMapApiResponse;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RestaurantController {
 
     private final KakaoMapApi kakaoMapApi;

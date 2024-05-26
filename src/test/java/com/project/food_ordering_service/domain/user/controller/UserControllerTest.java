@@ -68,6 +68,23 @@ class UserControllerTest {
             .andExpect(status().isCreated());
     }
 
+    @Test
+    @DisplayName("회원가입 실패 테스트 : 필수 필드가 누락")
+    void addUser_fail_Test() throws Exception {
+        //given
+        UserSaveRequest request = UserSaveRequest.builder()
+            .loginId("testLoginIdFail")
+            .password("testPassword")
+            .build();
+
+        //when
+        mockMvc.perform(post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            //then
+            .andExpect(status().isBadRequest());
+    }
+
     private UserSaveRequest createUser() {
         return UserSaveRequest.builder()
             .loginId("testId")

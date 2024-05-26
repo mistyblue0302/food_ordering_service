@@ -32,9 +32,7 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest loginRequest) {
-
-        User user = userRepository.findByEmail(
-                loginRequest.getEmail())
+        User user = userRepository.findByEmail(loginRequest.getEmail())
             .orElseThrow(() -> new UserNotFoundException());
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
@@ -57,7 +55,7 @@ public class AuthService {
     @Transactional
     public LoginResponse reissue(JwtAuthentication jwtAuthentication) {
         // 토큰을 추출하여 이미 로그아웃 처리된 토큰인지 확인
-        if(authRepository.existsByToken(jwtAuthentication.getToken())) {
+        if (authRepository.existsByToken(jwtAuthentication.getToken())) {
             throw new UnacceptedAuthrizationException();
         }
 

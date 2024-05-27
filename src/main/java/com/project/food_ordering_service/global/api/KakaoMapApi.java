@@ -20,8 +20,8 @@ public class KakaoMapApi {
             .build();
     }
 
-    //    @Value("${kakao.secret}")
-    private String kakaoSecretKey = "a7a2f38c20deae484401731c080a2117";
+    @Value("${kakao.secret}")
+    private String kakaoSecretKey;
 
     public static final String kakaoHeader = "KakaoAK ";
 

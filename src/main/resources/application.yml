@@ -16,7 +16,8 @@ spring:
     properties:
       hibernate.format_sql: true
 
-KAKAO_SECRET: a7a2f38c20deae484401731c080a2117
+kakao:
+  secret: a7a2f38c20deae484401731c080a2117
 
 jwt:
   access_expiration_time: 3600

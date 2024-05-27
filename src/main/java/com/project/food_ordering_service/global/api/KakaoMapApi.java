@@ -3,7 +3,7 @@ package com.project.food_ordering_service.global.api;
 import com.project.food_ordering_service.global.dto.request.KakaoMapApiRequest;
 import com.project.food_ordering_service.global.dto.response.KakaoMapApiResponse;
 import java.net.URI;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ public class KakaoMapApi {
             .build();
     }
 
-    @Value("${KAKAO_SECRET}")
+    @Value("${kakao.secret}")
     private String kakaoSecretKey;
 
     public static final String kakaoHeader = "KakaoAK ";

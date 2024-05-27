@@ -25,8 +25,7 @@ logging:
   level:
     org.hibernate.SQL: debug
 
-kakao:
-  secret: a7a2f38c20deae484401731c080a2117
+KAKAO_SECRET: a7a2f38c20deae484401731c080a2117
 
 jwt:
   access_expiration_time: 3600

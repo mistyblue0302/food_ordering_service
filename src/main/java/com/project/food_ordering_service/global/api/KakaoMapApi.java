@@ -3,6 +3,7 @@ package com.project.food_ordering_service.global.api;
 import com.project.food_ordering_service.global.dto.request.KakaoMapApiRequest;
 import com.project.food_ordering_service.global.dto.response.KakaoMapApiResponse;
 import java.net.URI;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -15,12 +16,12 @@ public class KakaoMapApi {
 
     private final RestClient restClient;
 
-    public KakaoMapApi(RestClient.Builder builde) {
-        this.restClient = builde.baseUrl("")
+    public KakaoMapApi(RestClient.Builder builder) {
+        this.restClient = builder.baseUrl("")
             .build();
     }
 
-    @Value("${kakao.secret}")
+    @Value("${KAKAO_SECRET}")
     private String kakaoSecretKey;
 
     public static final String kakaoHeader = "KakaoAK ";

@@ -17,8 +17,9 @@ public class KakaoMapApi {
 
     private final RestClient restClient;
 
-    public KakaoMapApi(RestClient restClient) {
-        this.restClient = restClient;
+    public KakaoMapApi(RestClient.Builder build) {
+        this.restClient = build.baseUrl("")
+            .build();
     }
 
     @Value("${kakao.secret}")

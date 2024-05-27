@@ -21,8 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 /**
- * @WebMvcTest : 스프링 애플리케이션 전체를 로드할 필요없이 특정 컨트롤러 레이어에 관련된 빈들만 로드하므로 테스트 속도가 빠르다.
- * @MockBean : mock 객체를 생성하고 주입하는데 사용된다. 특정 컴포넌트가 다른 컴포넌트에 의존하고 있을 때 외부 의존성을 목 객체로 대체하는데 사용된다.
+ * @ExtendWith : 단위 테스트에 공통적으로 사용할 확장 기능을 선언
  */
 
 @ExtendWith(MockitoExtension.class)

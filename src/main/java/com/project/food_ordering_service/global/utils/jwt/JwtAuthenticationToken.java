@@ -11,7 +11,7 @@ import java.util.Collection;
 
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
-    private final Object principal; // 인증된 사용자정보
+    private final Object principal; // 인증된 사용자를 식별할 수 있는 정보
 
     public JwtAuthenticationToken(
             Object principal, Collection<? extends GrantedAuthority> authorities

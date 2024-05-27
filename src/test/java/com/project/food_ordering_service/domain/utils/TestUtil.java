@@ -10,7 +10,7 @@ public class TestUtil {
     public static final Long USER_ID = 1L;
     public static final String EMAIL = "test@gmail.com";
     public static final String PASSWORD = "test1234!";
-    public static final String NICKNAME = "테스트";
+    public static final String NICKNAME = "testNickname";
     public static final String PHONE_NUMBER = "01012341234";
     public static final User savedUser = User
             .builder()

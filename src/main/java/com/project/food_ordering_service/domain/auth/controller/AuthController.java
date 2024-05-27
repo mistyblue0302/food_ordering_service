@@ -29,14 +29,21 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
-            @RequestBody @Validated LoginRequest loginRequest) {
+        @RequestBody @Validated LoginRequest loginRequest) {
         return ResponseEntity.ok(authService.login(loginRequest));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<LogoutResponse> logout(@AuthenticationPrincipal JwtAuthentication jwtAuthentication) {
+    public ResponseEntity<LogoutResponse> logout(
+        @AuthenticationPrincipal JwtAuthentication jwtAuthentication) {
         authService.logout(jwtAuthentication);
         LogoutResponse response = new LogoutResponse("Logout successful");
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/reissue")
+    public ResponseEntity<LoginResponse> reissue(
+        @AuthenticationPrincipal JwtAuthentication jwtAuthentication) {
+        return ResponseEntity.ok(authService.reissue(jwtAuthentication));
     }
 }

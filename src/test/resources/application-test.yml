@@ -27,3 +27,8 @@ logging:
 
 kakao:
   secret: a7a2f38c20deae484401731c080a2117
+
+jwt:
+  access_expiration_time: 3600
+  refresh_expiration_time: 1209600
+  secret: 3ff3e0a7b04deb427e630aa85181956bcdbc46249df88454f0a0731302e0df0b82bd1dcac3852474689d517307bafa63a569cf19fae43c38a21b4706c45b1733

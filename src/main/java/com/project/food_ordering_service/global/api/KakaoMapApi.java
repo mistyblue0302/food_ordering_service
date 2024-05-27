@@ -17,8 +17,8 @@ public class KakaoMapApi {
 
     private final RestClient restClient;
 
-    public KakaoMapApi(RestClient.Builder build) {
-        this.restClient = build.baseUrl("")
+    public KakaoMapApi(RestClient.Builder builde) {
+        this.restClient = builde.baseUrl("")
             .build();
     }
 

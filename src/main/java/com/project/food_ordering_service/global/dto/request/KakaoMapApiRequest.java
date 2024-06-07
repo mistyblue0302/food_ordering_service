@@ -7,5 +7,4 @@ public class KakaoMapApiRequest {
 
     private final double x;
     private final double y;
-
 }

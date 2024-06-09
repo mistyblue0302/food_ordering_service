@@ -10,6 +10,7 @@
 - H2
 - GitHub Actions
 - JaCoCo
+- Swagger
 
 ## 개발 규칙
 

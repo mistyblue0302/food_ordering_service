@@ -51,7 +51,7 @@ class OrderServiceTest {
     void setUp() {
         savedUser = TestUtil.savedUser;
         orderRequest = OrderRequest.builder()
-            .restaurantId(RESTAURANT_ID)
+            .restaurantId(TestUtil.RESTAURANT_ID)
             .build();
     }
 

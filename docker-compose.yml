@@ -1,0 +1,27 @@
+version: '3'
+services:
+  db:
+    image: mysql
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: food_ordering_service
+      MYSQL_INITDB_SCRIPT: /docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  spring-boot-app:
+    image: test
+    container_name: test
+    ports:
+      - "8080:8080"
+    links:
+      - db
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/food_ordering_service
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=1234

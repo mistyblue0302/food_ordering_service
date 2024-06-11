@@ -7,6 +7,8 @@ spring:
 
   jpa:
     show-sql: true
+    # hibernate Mysql 설정
+    database-platform: org.hibernate.dialect.MySQL8Dialect
 
     # DB의 고유 기능 사용 가능
     hibernate:

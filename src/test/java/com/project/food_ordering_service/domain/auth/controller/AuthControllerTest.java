@@ -11,9 +11,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.food_ordering_service.domain.auth.dto.LoginRequest;
 import com.project.food_ordering_service.domain.auth.dto.LoginResponse;
 import com.project.food_ordering_service.domain.auth.service.AuthService;
+import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
 import com.project.food_ordering_service.domain.utils.TestUtil;
+import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
+import com.project.food_ordering_service.global.utils.jwt.JwtAuthenticationToken;
+import com.project.food_ordering_service.global.utils.jwt.JwtHolder;
 import com.project.food_ordering_service.global.utils.jwt.JwtUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +29,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -89,8 +98,18 @@ class AuthControllerTest extends TestUtil {
     @Test
     @DisplayName("로그아웃 테스트")
     void logout_success() throws Exception {
+        //given
+        Jws<Claims> claimsJws = jwtUtil.parseToken(REFRESH_TOKEN);
+        JwtHolder jwtHolder = new JwtHolder(claimsJws, REFRESH_TOKEN);
+        JwtAuthentication jwtAuthentication = new JwtAuthentication(jwtHolder);
+        JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(
+            jwtAuthentication,
+            List.of(new SimpleGrantedAuthority(Role.CLIENT.toString()))
+        );
+
+        //when, then
         mockMvc.perform(post("/auth/logout")
-                .header("Authorization", "Bearer " + REFRESH_TOKEN))
+                .with(SecurityMockMvcRequestPostProcessors.authentication(jwtAuthenticationToken)))
             .andExpect(status().isOk());
     }
 

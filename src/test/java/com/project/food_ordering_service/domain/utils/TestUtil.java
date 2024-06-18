@@ -12,6 +12,7 @@ public class TestUtil {
     public static final String PASSWORD = "test1234!";
     public static final String NICKNAME = "testNickname";
     public static final String PHONE_NUMBER = "01012341234";
+    public static final Long RESTAURANT_ID = 2L;
     public static final User savedUser = User
             .builder()
             .password(bCryptPasswordEncoder.encode(PASSWORD))

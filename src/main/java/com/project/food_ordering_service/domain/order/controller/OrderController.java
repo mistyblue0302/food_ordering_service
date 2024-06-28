@@ -39,12 +39,8 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<Page<Order>> getOrdersByUser(@PathVariable Long userId,
-                                                       @RequestParam(defaultValue = "0") int page,
-                                                       @RequestParam(defaultValue = "10") int size,
-                                                       @RequestParam(defaultValue = "id") String sortBy,
-                                                       @RequestParam(defaultValue = "desc") String sortDirection) {
+
+@PageDefault(size=10, sort="id", direction = Sort.Direction.DESC) Pageable pageable)
         Sort sort = sortDirection.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         PageRequest pageRequest = PageRequest.of(page, size, sort);
         Page<Order> orders = orderService.getOrdersByUser(userId, pageRequest);

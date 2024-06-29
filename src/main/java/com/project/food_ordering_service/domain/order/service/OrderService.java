@@ -9,6 +9,10 @@ import com.project.food_ordering_service.domain.user.exception.UserNotFoundExcep
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
 import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,14 +28,22 @@ public class OrderService {
         Long userId = jwtAuthentication.getId();
 
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> new UserNotFoundException());
 
         Order order = Order.builder()
-            .user(user)
-            .restaurantId(orderRequest.getRestaurantId())
-            .status(OrderStatus.ORDERED)
-            .build();
+                .user(user)
+                .restaurantId(orderRequest.getRestaurantId())
+                .status(OrderStatus.ORDERED)
+                .build();
 
         return orderRepository.save(order);
+    }
+
+    public Page<Order> getOrders(Pageable pageable) {
+        return orderRepository.findAll(pageable);
+    }
+
+    public Page<Order> getOrdersByUser(Long userId, Pageable pageable) {
+        return orderRepository.findByUserId(userId, pageable);
     }
 }

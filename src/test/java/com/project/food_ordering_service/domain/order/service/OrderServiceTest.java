@@ -1,6 +1,5 @@
 package com.project.food_ordering_service.domain.order.service;
 
-import static com.project.food_ordering_service.domain.utils.TestUtil.RESTAURANT_ID;
 import static com.project.food_ordering_service.domain.utils.TestUtil.USER_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;

@@ -39,11 +39,11 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public Page<Order> getOrders(PageRequest pageRequest) {
-        return orderRepository.findAll(pageRequest);
+    public Page<Order> getOrders(Pageable pageable) {
+        return orderRepository.findAll(pageable);
     }
 
-    public Page<Order> getOrdersByUser(Long userId, PageRequest pageRequest) {
-        return orderRepository.findByUserId(userId, pageRequest);
+    public Page<Order> getOrdersByUser(Long userId, Pageable pageable) {
+        return orderRepository.findByUserId(userId, pageable);
     }
 }

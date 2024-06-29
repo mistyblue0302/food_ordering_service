@@ -7,7 +7,9 @@ import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -29,21 +31,17 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Order>> getOrders(@RequestParam(defaultValue = "0") int page,
-                                                 @RequestParam(defaultValue = "10") int size,
-                                                 @RequestParam(defaultValue = "id") String sortBy,
-                                                 @RequestParam(defaultValue = "desc") String sortDirection) {
-        Sort sort = sortDirection.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
-        Page<Order> orders = orderService.getOrders(pageRequest);
+    public ResponseEntity<Page<Order>> getOrders(
+            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<Order> orders = orderService.getOrders(pageable);
         return ResponseEntity.ok(orders);
     }
 
-
-@PageDefault(size=10, sort="id", direction = Sort.Direction.DESC) Pageable pageable)
-        Sort sort = sortDirection.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
-        Page<Order> orders = orderService.getOrdersByUser(userId, pageRequest);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Page<Order>> getOrdersByUser(
+            @PathVariable Long userId,
+            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<Order> orders = orderService.getOrdersByUser(userId, pageable);
         return ResponseEntity.ok(orders);
     }
 }

@@ -1,7 +1,7 @@
 package com.project.food_ordering_service.domain.order.entity;
 
+import com.project.food_ordering_service.domain.restaurant.entity.Restaurant;
 import com.project.food_ordering_service.domain.user.entity.User;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,8 +33,8 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "restaurant_id")
-    private Long restaurantId;
+    @OneToOne
+    private Restaurant restaurant;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;

@@ -1,6 +1,5 @@
 package com.project.food_ordering_service.domain.order.service;
 
-import static com.project.food_ordering_service.domain.utils.TestUtil.RESTAURANT_ID;
 import static com.project.food_ordering_service.domain.utils.TestUtil.USER_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -10,6 +9,9 @@ import com.project.food_ordering_service.domain.order.dto.OrderRequest;
 import com.project.food_ordering_service.domain.order.entity.Order;
 import com.project.food_ordering_service.domain.order.entity.OrderStatus;
 import com.project.food_ordering_service.domain.order.repository.OrderRepository;
+import com.project.food_ordering_service.domain.restaurant.dto.RestaurantRequest;
+import com.project.food_ordering_service.domain.restaurant.entity.Restaurant;
+import com.project.food_ordering_service.domain.restaurant.repository.RestaurantRepository;
 import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
 import com.project.food_ordering_service.domain.utils.TestUtil;
@@ -22,8 +24,10 @@ import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.impl.DefaultClaims;
 import io.jsonwebtoken.impl.DefaultJws;
 import io.jsonwebtoken.impl.DefaultJwsHeader;
+
 import java.util.Date;
 import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,15 +48,24 @@ class OrderServiceTest {
     @Mock
     UserRepository userRepository;
 
+    @Mock
+    RestaurantRepository restaurantRepository;
+
     User savedUser;
     OrderRequest orderRequest;
 
     @BeforeEach
     void setUp() {
         savedUser = TestUtil.savedUser;
+        RestaurantRequest restaurantRequest = RestaurantRequest.builder()
+                .id(TestUtil.RESTAURANT_ID)
+                .name("Test Restaurant")
+                .address("Test Address")
+                .build();
+
         orderRequest = OrderRequest.builder()
-            .restaurantId(TestUtil.RESTAURANT_ID)
-            .build();
+                .restaurantRequest(restaurantRequest)
+                .build();
     }
 
     @Test
@@ -60,21 +73,28 @@ class OrderServiceTest {
     void order_success() {
         //given
         JwtAuthentication jwtAuthentication = new JwtAuthentication(
-            new JwtHolder(createMockClaims(USER_ID, "testToken", JwtProperties.ACCESS_TOKEN_NAME),
-                "testToken"));
+                new JwtHolder(createMockClaims(USER_ID, "testToken", JwtProperties.ACCESS_TOKEN_NAME),
+                        "testToken"));
 
-        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(savedUser));
+        when(userRepository.findById(TestUtil.USER_ID)).thenReturn(Optional.of(TestUtil.savedUser));
+
+        Restaurant savedRestaurant = Restaurant.builder()
+                .id(TestUtil.RESTAURANT_ID)
+                .name("Test Restaurant")
+                .address("Test Street")
+                .build();
+
+        when(restaurantRepository.save(any(Restaurant.class))).thenReturn(savedRestaurant);
         when(orderRepository.save(any(Order.class))).thenReturn(
-            Order.builder().user(savedUser).restaurantId(RESTAURANT_ID).status(OrderStatus.ORDERED)
-                .build());
+                Order.builder().user(TestUtil.savedUser).restaurant(savedRestaurant).status(OrderStatus.ORDERED).build());
 
-        // when
+        // When
         Order createdOrder = orderService.createOrder(jwtAuthentication, orderRequest);
 
-        // then
+        // Then
         assertNotNull(createdOrder);
-        assertEquals(savedUser, createdOrder.getUser());
-        assertEquals(RESTAURANT_ID, createdOrder.getRestaurantId());
+        assertEquals(TestUtil.savedUser, createdOrder.getUser());
+        assertEquals(savedRestaurant, createdOrder.getRestaurant());
         assertEquals(OrderStatus.ORDERED, createdOrder.getStatus());
     }
 

@@ -1,5 +1,7 @@
 package com.project.food_ordering_service.domain.order.dto;
 
+import com.project.food_ordering_service.domain.order.entity.OrderStatus;
+import com.project.food_ordering_service.domain.restaurant.dto.RestaurantResponse;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,7 +13,7 @@ public class OrderResponse {
 
     private Long userId;
 
-    private Long restaurantId;
+    private OrderStatus status;
 
-    private String status;
+    private RestaurantResponse restaurantResponse;
 }

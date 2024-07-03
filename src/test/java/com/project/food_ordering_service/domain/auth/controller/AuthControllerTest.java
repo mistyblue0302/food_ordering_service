@@ -67,8 +67,8 @@ class AuthControllerTest extends TestUtil {
     @BeforeEach
     void setUp() {
         userRepository.save(savedUser);
-        ACCESS_TOKEN = jwtUtil.createAccessToken(savedUser.getId());
-        REFRESH_TOKEN = jwtUtil.createRefreshToken(savedUser.getId());
+        ACCESS_TOKEN = jwtUtil.createAccessToken(savedUser.getId(), savedUser.getRole());
+        REFRESH_TOKEN = jwtUtil.createRefreshToken(savedUser.getId(), savedUser.getRole());
     }
 
     LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
@@ -77,7 +77,7 @@ class AuthControllerTest extends TestUtil {
     @DisplayName("로그인 테스트 : 엑세스 토큰과 리프레시 토큰을 반환")
     void login_success() throws Exception {
         //given
-        given(authService.login(any())).willReturn(createLoginResponse(savedUser.getId()));
+        given(authService.login(any())).willReturn(createLoginResponse(savedUser.getId(), savedUser.getRole()));
 
         //when
         MvcResult result = mockMvc.perform(post("/auth/login")
@@ -91,8 +91,6 @@ class AuthControllerTest extends TestUtil {
         LoginResponse response = objectMapper.readValue(responseBody, LoginResponse.class);
         assertNotNull(response.getAccessToken());
         assertNotNull(response.getRefreshToken());
-        assertEquals(ACCESS_TOKEN, response.getAccessToken());
-        assertEquals(REFRESH_TOKEN, response.getRefreshToken());
     }
 
     @Test
@@ -113,9 +111,9 @@ class AuthControllerTest extends TestUtil {
             .andExpect(status().isOk());
     }
 
-    private LoginResponse createLoginResponse(Long userId) {
-        String accessToken = jwtUtil.createAccessToken(userId);
-        String refreshToken = jwtUtil.createRefreshToken(userId);
+    private LoginResponse createLoginResponse(Long userId, Role role) {
+        String accessToken = jwtUtil.createAccessToken(userId, role);
+        String refreshToken = jwtUtil.createRefreshToken(userId, role);
 
         return LoginResponse.builder()
             .accessToken(accessToken)

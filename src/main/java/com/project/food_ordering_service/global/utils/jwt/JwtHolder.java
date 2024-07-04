@@ -5,8 +5,12 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * JWT 토큰에서 클레임과 관련된 정보를 추출하는 클래스
@@ -24,6 +28,7 @@ public class JwtHolder {
     private final String errorMessage = "jwt claim 필드 null : ";
     private final Jws<Claims> claims;
     private final String token;
+    private List<GrantedAuthority> authorities;
 
     public Long getUserId() {
         try {
@@ -60,6 +65,20 @@ public class JwtHolder {
         return claims.getBody().getExpiration();
     }
 
+    public List<GrantedAuthority> getAuthorities() {
+        if (authorities == null) {
+            authorities = new ArrayList<>();
+            try {
+                String role = claims.getBody().get(JwtProperties.USER_ROLE).toString();
+                authorities.add(new SimpleGrantedAuthority(role));
+            } catch (NullPointerException e) {
+                log.info(errorMessage + JwtProperties.USER_ROLE);
+                throw new IllegalArgumentException();
+            }
+        }
+        return authorities;
+    }
+
     public Role getRole() {
         try {
             String role = claims.getBody().get(JwtProperties.USER_ROLE).toString();
@@ -68,5 +87,10 @@ public class JwtHolder {
             log.info(errorMessage + JwtProperties.USER_ROLE);
             throw new IllegalArgumentException();
         }
+    }
+
+    public void setRole(Role role) {
+        authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(role.name()));
     }
 }

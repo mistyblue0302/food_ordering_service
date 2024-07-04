@@ -102,7 +102,7 @@ class OrderServiceTest {
         // 만료시간은 현재 시간에서 1시간을 더한 값으로 설정
         Claims claimsBody = new DefaultClaims();
         claimsBody.put(JwtProperties.USER_ID, userId.toString());
-        claimsBody.put(JwtProperties.USER_ROLE, TestUtil.ROLE.name());
+        claimsBody.put(JwtProperties.USER_ROLE, TestUtil.ROLE_CLIENT.name());
         claimsBody.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60));
 
         // JwsHeader 객체를 통해 헤더를 생성(헤더에 토큰 타입 설정)

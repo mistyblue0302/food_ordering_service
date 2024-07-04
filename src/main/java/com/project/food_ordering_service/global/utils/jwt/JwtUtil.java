@@ -59,17 +59,17 @@ public class JwtUtil {
     private String createToken(Long id, Role role, String tokenType, long expirationTime) {
         Claims claims = Jwts.claims(); // Jwt 클레임 생성
         claims.put(JwtProperties.USER_ID, id.toString()); // 클레임에 사용자 id값 추가
-        claims.put(JwtProperties.USER_ROLE, role.toString()); // 클레임에 역할 추가
+        claims.put(JwtProperties.USER_ROLE, role.name());
 
         ZonedDateTime publishedTime = ZonedDateTime.now(); // 현재 시간
 
         return Jwts.builder()
-            .setHeaderParam(JwtProperties.TOKEN_TYPE, tokenType)
-            .setClaims(claims)
-            .setIssuedAt(Date.from(publishedTime.toInstant()))
-            .setExpiration(Date.from(publishedTime.plusSeconds(expirationTime).toInstant()))
-            .signWith(key, SignatureAlgorithm.HS256)  // SHA 키로 서명
-            .compact(); // JWT 토큰 문자열로 생성
+                .setHeaderParam(JwtProperties.TOKEN_TYPE, tokenType)
+                .setClaims(claims)
+                .setIssuedAt(Date.from(publishedTime.toInstant()))
+                .setExpiration(Date.from(publishedTime.plusSeconds(expirationTime).toInstant()))
+                .signWith(key, SignatureAlgorithm.HS256) // SHA 키로 서명
+                .compact(); // JWT 토큰 문자열로 생성
     }
 
     // 토큰을 파싱하여 클레임을 추출

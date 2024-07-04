@@ -34,7 +34,7 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail())
-            .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> new UserNotFoundException());
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new WrongPasswordException();
@@ -46,9 +46,9 @@ public class AuthService {
     @Transactional
     public void logout(JwtAuthentication jwtAuthentication) {
         RefreshToken logoutRefreshToken = RefreshToken.builder()
-            .token(jwtAuthentication.getToken())
-            .expiredDate(jwtAuthentication.getExpirationTime())
-            .build();
+                .token(jwtAuthentication.getToken())
+                .expiredDate(jwtAuthentication.getExpirationTime())
+                .build();
 
         authRepository.save(logoutRefreshToken);
     }
@@ -69,8 +69,8 @@ public class AuthService {
         String refreshToken = jwtUtil.createRefreshToken(userId, role);
 
         return LoginResponse.builder()
-            .accessToken(accessToken)
-            .refreshToken(refreshToken)
-            .build();
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 }

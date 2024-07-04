@@ -1,6 +1,5 @@
 package com.project.food_ordering_service.global.utils.jwt;
 
-import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.global.utils.jwt.exception.InvalidTokenException;
 import io.jsonwebtoken.security.SignatureException;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -12,13 +11,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * JWT 토큰에 대한 검증을 수행 토큰의 유효성 검사 및 사용자 인증 정보를 설정
@@ -103,10 +100,8 @@ public class JwtAuthorizationFilter extends
     private void setAuthenticationFromJwt(JwtHolder jwtHolder) {
         // JwtHolder 객체를 통해 토큰에 필요한 정보를 가져온다. (토큰 문자열, 사용자 식별, 만료시간)
         JwtAuthentication jwtAuthentication = new JwtAuthentication(jwtHolder);
-        // Extract role from claims and set authorities
-        Role role = jwtHolder.getRole();  // 추출된 역할 정보 사용
         JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(
-            jwtAuthentication, List.of(new SimpleGrantedAuthority(role.toString())));
+                jwtAuthentication, jwtHolder.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(jwtAuthenticationToken);
     }

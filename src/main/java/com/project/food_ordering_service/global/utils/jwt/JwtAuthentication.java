@@ -1,7 +1,8 @@
 package com.project.food_ordering_service.global.utils.jwt;
 
-import com.project.food_ordering_service.domain.user.entity.Role;
 import java.util.Date;
+
+import com.project.food_ordering_service.domain.user.entity.Role;
 import lombok.Getter;
 
 /**

@@ -14,12 +14,14 @@ public class TestUtil {
     public static final String NICKNAME = "testNickname";
     public static final String PHONE_NUMBER = "01012341234";
     public static final Long RESTAURANT_ID = 2L;
-    public static final Role ROLE = Role.CLIENT;
+    public static final Role ROLE_CLIENT = Role.CLIENT;
+    public static final Role ROLE_OWNER = Role.OWNER;
+
     public static final User savedUser = User
-        .builder()
-        .password(bCryptPasswordEncoder.encode(PASSWORD))
-        .phoneNumber(PHONE_NUMBER)
-        .role(ROLE)
-        .email(EMAIL)
-        .build();
+            .builder()
+            .password(bCryptPasswordEncoder.encode(PASSWORD))
+            .phoneNumber(PHONE_NUMBER)
+            .role(ROLE_CLIENT)
+            .email(EMAIL)
+            .build();
 }

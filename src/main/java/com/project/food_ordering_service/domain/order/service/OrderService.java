@@ -3,6 +3,7 @@ package com.project.food_ordering_service.domain.order.service;
 import com.project.food_ordering_service.domain.order.dto.OrderRequest;
 import com.project.food_ordering_service.domain.order.entity.Order;
 import com.project.food_ordering_service.domain.order.entity.OrderStatus;
+import com.project.food_ordering_service.domain.order.exception.OrderNotFoundException;
 import com.project.food_ordering_service.domain.order.repository.OrderRepository;
 import com.project.food_ordering_service.domain.restaurant.entity.Restaurant;
 import com.project.food_ordering_service.domain.restaurant.repository.RestaurantRepository;
@@ -11,6 +12,7 @@ import com.project.food_ordering_service.domain.user.exception.UserNotFoundExcep
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
 import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,20 @@ public class OrderService {
             .build();
 
         return orderRepository.save(order);
+    }
+
+    @Transactional
+    public void requestDelivery(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException());
+
+        // 주문 상태는 ORDERED일 때만 배달 요청이 가능하도록 설정
+        if(order.getStatus() != OrderStatus.ORDERED) {
+            throw new IllegalStateException("주문 상태가 올바르지 않습니다.");
+        }
+
+        order.setStatus(OrderStatus.ONTHEWAY);
+        orderRepository.save(order);
     }
 
     public Page<Order> getOrders(Pageable pageable) {

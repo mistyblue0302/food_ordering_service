@@ -60,7 +60,7 @@ public class OrderService {
             throw new IllegalStateException("주문 상태가 올바르지 않습니다.");
         }
 
-        order.setStatus(OrderStatus.ONTHEWAY);
+        order.setStatus(OrderStatus.COMPLETED);
         orderRepository.save(order);
     }
 

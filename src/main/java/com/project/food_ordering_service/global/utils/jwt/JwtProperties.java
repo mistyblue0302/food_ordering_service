@@ -9,5 +9,5 @@ public class JwtProperties {
     public static final String ACCESS_TOKEN_NAME = "access";
     public static final String REFRESH_TOKEN_NAME = "refresh";
     public static final String USER_ID = "userId";
-    public static final String USER_ROLE = "role";
+    public static final String ROLE = "role";
 }

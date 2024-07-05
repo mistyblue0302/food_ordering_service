@@ -65,32 +65,13 @@ public class JwtHolder {
         return claims.getBody().getExpiration();
     }
 
-    public List<GrantedAuthority> getAuthorities() {
-        if (authorities == null) {
-            authorities = new ArrayList<>();
-            try {
-                String role = claims.getBody().get(JwtProperties.USER_ROLE).toString();
-                authorities.add(new SimpleGrantedAuthority(role));
-            } catch (NullPointerException e) {
-                log.info(errorMessage + JwtProperties.USER_ROLE);
-                throw new IllegalArgumentException();
-            }
-        }
-        return authorities;
-    }
-
     public Role getRole() {
         try {
-            String role = claims.getBody().get(JwtProperties.USER_ROLE).toString();
+            String role = claims.getBody().get(JwtProperties.ROLE).toString();
             return Role.valueOf(role);
         } catch (NullPointerException e) {
-            log.info(errorMessage + JwtProperties.USER_ROLE);
+            log.info(errorMessage + JwtProperties.ROLE);
             throw new IllegalArgumentException();
         }
-    }
-
-    public void setRole(Role role) {
-        authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(role.name()));
     }
 }

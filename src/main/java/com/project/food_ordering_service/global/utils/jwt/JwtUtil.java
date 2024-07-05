@@ -59,7 +59,7 @@ public class JwtUtil {
     private String createToken(Long id, Role role, String tokenType, long expirationTime) {
         Claims claims = Jwts.claims(); // Jwt 클레임 생성
         claims.put(JwtProperties.USER_ID, id.toString()); // 클레임에 사용자 id값 추가
-        claims.put(JwtProperties.USER_ROLE, role.name());
+        claims.put(JwtProperties.ROLE, role.toString());
 
         ZonedDateTime publishedTime = ZonedDateTime.now(); // 현재 시간
 

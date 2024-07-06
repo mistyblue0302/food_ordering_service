@@ -37,21 +37,21 @@ public class OrderService {
         Long userId = jwtAuthentication.getId();
 
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> new UserNotFoundException());
 
         Restaurant restaurant = Restaurant.builder()
-            .id(orderRequest.getRestaurantRequest().getId())
-            .name(orderRequest.getRestaurantRequest().getName())
-            .address(orderRequest.getRestaurantRequest().getAddress())
-            .build();
+                .id(orderRequest.getRestaurantRequest().getId())
+                .name(orderRequest.getRestaurantRequest().getName())
+                .address(orderRequest.getRestaurantRequest().getAddress())
+                .build();
 
         restaurantRepository.save(restaurant);
 
         Order order = Order.builder()
-            .user(user)
-            .restaurant(restaurant)
-            .status(OrderStatus.ORDERED)
-            .build();
+                .user(user)
+                .restaurant(restaurant)
+                .status(OrderStatus.ORDERED)
+                .build();
 
         return orderRepository.save(order);
     }
@@ -61,11 +61,12 @@ public class OrderService {
         if (!jwtAuthentication.getRole().equals(Role.OWNER)) {
             throw new AccessDeniedException("사장만 배달을 요청할 수 있습니다.");
         }
+
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException());
 
         // 주문 상태는 ORDERED일 때만 배달 요청이 가능하도록 설정
-        if(order.getStatus() != OrderStatus.ORDERED) {
+        if (order.getStatus() != OrderStatus.ORDERED) {
             throw new IllegalStateException("주문 상태가 올바르지 않습니다.");
         }
 

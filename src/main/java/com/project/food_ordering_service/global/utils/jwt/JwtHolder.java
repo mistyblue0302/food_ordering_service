@@ -1,11 +1,16 @@
 package com.project.food_ordering_service.global.utils.jwt;
 
+import com.project.food_ordering_service.domain.user.entity.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * JWT 토큰에서 클레임과 관련된 정보를 추출하는 클래스
@@ -23,6 +28,7 @@ public class JwtHolder {
     private final String errorMessage = "jwt claim 필드 null : ";
     private final Jws<Claims> claims;
     private final String token;
+    private List<GrantedAuthority> authorities;
 
     public Long getUserId() {
         try {
@@ -57,5 +63,15 @@ public class JwtHolder {
 
     public Date getExpirationTime() {
         return claims.getBody().getExpiration();
+    }
+
+    public Role getRole() {
+        try {
+            String role = claims.getBody().get(JwtProperties.ROLE).toString();
+            return Role.valueOf(role);
+        } catch (NullPointerException e) {
+            log.info(errorMessage + JwtProperties.ROLE);
+            throw new IllegalArgumentException();
+        }
     }
 }

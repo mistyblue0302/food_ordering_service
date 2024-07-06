@@ -103,9 +103,9 @@ public class JwtAuthorizationFilter extends
     private void setAuthenticationFromJwt(JwtHolder jwtHolder) {
         // JwtHolder 객체를 통해 토큰에 필요한 정보를 가져온다. (토큰 문자열, 사용자 식별, 만료시간)
         JwtAuthentication jwtAuthentication = new JwtAuthentication(jwtHolder);
+        Role userRole = jwtHolder.getRole(); // 토큰에서 역할 정보를 가져온다.
         JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(
-            jwtAuthentication, List.of(
-            new SimpleGrantedAuthority(Role.CLIENT.toString())));
+                jwtAuthentication, List.of(new SimpleGrantedAuthority(userRole.toString())));
 
         SecurityContextHolder.getContext().setAuthentication(jwtAuthenticationToken);
     }

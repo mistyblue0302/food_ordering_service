@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
+import static com.project.food_ordering_service.domain.utils.TestUtil.ROLE_CLIENT;
 import static com.project.food_ordering_service.domain.utils.TestUtil.USER_ID;
 import static com.project.food_ordering_service.domain.utils.TestUtil.savedUser;
 import static org.assertj.core.api.Assertions.*;
@@ -52,13 +53,14 @@ class AuthServiceTest {
         given(passwordEncoder.matches(any(CharSequence.class), any(String.class))).willReturn(true);
         given(user.getPassword()).willReturn(savedUser.getPassword());
         given(user.getId()).willReturn(USER_ID);
+        given(user.getRole()).willReturn(ROLE_CLIENT);
 
         LoginResponse loginResponse = authService.login(loginRequest);
         assertThat(loginResponse).isNotNull();
 
         //then
-        then(jwtUtil).should(times(1)).createAccessToken(USER_ID);
-        then(jwtUtil).should(times(1)).createRefreshToken(USER_ID);
+        then(jwtUtil).should(times(1)).createAccessToken(USER_ID, ROLE_CLIENT);
+        then(jwtUtil).should(times(1)).createRefreshToken(USER_ID, ROLE_CLIENT);
     }
 
     @Test
@@ -80,7 +82,7 @@ class AuthServiceTest {
         //given
         given(userRepository.findByEmail(any(String.class))).willReturn(Optional.of(user));
         given(passwordEncoder.matches(any(CharSequence.class), any(String.class))).willReturn(
-            false);
+                false);
         given(user.getPassword()).willReturn(savedUser.getPassword());
 
         //when

@@ -72,9 +72,8 @@ class OrderServiceTest {
     @DisplayName("주문 성공 테스트")
     void order_success() {
         //given
-        JwtAuthentication jwtAuthentication = new JwtAuthentication(
-                new JwtHolder(createMockClaims(USER_ID, "testToken", JwtProperties.ACCESS_TOKEN_NAME),
-                        "testToken"));
+        JwtHolder jwtHolder = new JwtHolder(createMockClaims(USER_ID, "testToken", JwtProperties.ACCESS_TOKEN_NAME), "testToken");
+        JwtAuthentication jwtAuthentication = new JwtAuthentication(jwtHolder);
 
         when(userRepository.findById(TestUtil.USER_ID)).thenReturn(Optional.of(TestUtil.savedUser));
 
@@ -103,6 +102,7 @@ class OrderServiceTest {
         // 만료시간은 현재 시간에서 1시간을 더한 값으로 설정
         Claims claimsBody = new DefaultClaims();
         claimsBody.put(JwtProperties.USER_ID, userId.toString());
+        claimsBody.put(JwtProperties.ROLE, TestUtil.ROLE_CLIENT.name());
         claimsBody.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60));
 
         // JwsHeader 객체를 통해 헤더를 생성(헤더에 토큰 타입 설정)

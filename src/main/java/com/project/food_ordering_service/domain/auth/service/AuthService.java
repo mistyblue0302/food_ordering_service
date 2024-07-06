@@ -5,6 +5,7 @@ import com.project.food_ordering_service.domain.auth.exception.UnacceptedAuthriz
 import com.project.food_ordering_service.domain.auth.repository.AuthRepository;
 import com.project.food_ordering_service.domain.auth.dto.LoginRequest;
 import com.project.food_ordering_service.domain.auth.dto.LoginResponse;
+import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.exception.UserNotFoundException;
 import com.project.food_ordering_service.domain.user.exception.WrongPasswordException;
@@ -33,21 +34,21 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail())
-            .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> new UserNotFoundException());
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new WrongPasswordException();
         }
 
-        return createLoginResponse(user.getId());
+        return createLoginResponse(user.getId(), user.getRole());
     }
 
     @Transactional
     public void logout(JwtAuthentication jwtAuthentication) {
         RefreshToken logoutRefreshToken = RefreshToken.builder()
-            .token(jwtAuthentication.getToken())
-            .expiredDate(jwtAuthentication.getExpirationTime())
-            .build();
+                .token(jwtAuthentication.getToken())
+                .expiredDate(jwtAuthentication.getExpirationTime())
+                .build();
 
         authRepository.save(logoutRefreshToken);
     }
@@ -60,16 +61,16 @@ public class AuthService {
         }
 
         // 로그아웃 처리되지 않은 토큰이라면 새로운 엑세스 토큰과 리프레시 토큰을 생성하여 반환
-        return createLoginResponse(jwtAuthentication.getId());
+        return createLoginResponse(jwtAuthentication.getId(), jwtAuthentication.getRole());
     }
 
-    private LoginResponse createLoginResponse(Long userId) {
-        String accessToken = jwtUtil.createAccessToken(userId);
-        String refreshToken = jwtUtil.createRefreshToken(userId);
+    private LoginResponse createLoginResponse(Long userId, Role role) {
+        String accessToken = jwtUtil.createAccessToken(userId, role);
+        String refreshToken = jwtUtil.createRefreshToken(userId, role);
 
         return LoginResponse.builder()
-            .accessToken(accessToken)
-            .refreshToken(refreshToken)
-            .build();
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 }

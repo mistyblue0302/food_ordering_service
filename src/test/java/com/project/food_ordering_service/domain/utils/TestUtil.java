@@ -1,5 +1,6 @@
 package com.project.food_ordering_service.domain.utils;
 
+import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.domain.user.entity.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -13,10 +14,14 @@ public class TestUtil {
     public static final String NICKNAME = "testNickname";
     public static final String PHONE_NUMBER = "01012341234";
     public static final Long RESTAURANT_ID = 2L;
+    public static final Role ROLE_CLIENT = Role.CLIENT;
+    public static final Role ROLE_OWNER = Role.OWNER;
+
     public static final User savedUser = User
             .builder()
             .password(bCryptPasswordEncoder.encode(PASSWORD))
-            .password(PHONE_NUMBER)
+            .phoneNumber(PHONE_NUMBER)
+            .role(ROLE_CLIENT)
             .email(EMAIL)
             .build();
 }

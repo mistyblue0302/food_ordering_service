@@ -50,8 +50,10 @@ public class OrderController {
     }
 
     @PostMapping("/{orderId}/delivery")
-    public ResponseEntity<Void> requestDelivery(@PathVariable Long orderId) {
-        orderService.requestDelivery(orderId);
+    public ResponseEntity<Void> requestDelivery(
+            @AuthenticationPrincipal JwtAuthentication jwtAuthentication,
+            @PathVariable Long orderId) {
+        orderService.requestDelivery(jwtAuthentication, orderId);
         return ResponseEntity.ok().build();
     }
 

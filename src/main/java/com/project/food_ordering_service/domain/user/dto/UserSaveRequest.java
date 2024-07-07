@@ -1,7 +1,9 @@
 package com.project.food_ordering_service.domain.user.dto;
 
+import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.domain.user.entity.User;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +14,6 @@ import lombok.Setter;
  */
 
 @Getter
-@Setter
 @Builder
 public class UserSaveRequest {
 
@@ -31,17 +32,21 @@ public class UserSaveRequest {
     @NotBlank(message = "{email.notBlank}")
     private String email;
 
+    @NotNull(message = "{role.notNull}")
+    private Role role;
+
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public User toEntity() {
+    public User toEntity(String encodedPassword) {
         return User.builder()
-            .loginId(this.loginId)
-            .userName(this.userName)
-            .password(this.password)
-            .phoneNumber(this.phoneNumber)
-            .email(this.email)
-            .build();
+                .loginId(this.loginId)
+                .userName(this.userName)
+                .password(encodedPassword)
+                .phoneNumber(this.phoneNumber)
+                .email(this.email)
+                .role(this.role)
+                .build();
     }
 }

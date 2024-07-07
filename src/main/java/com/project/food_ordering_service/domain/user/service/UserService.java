@@ -35,14 +35,7 @@ public class UserService {
 
         String encodedPassword = passwordEncoder.encode(userSaveRequest.getPassword());
 
-        User user = User.builder()
-                .loginId(userSaveRequest.getLoginId())
-                .userName(userSaveRequest.getUserName())
-                .password(encodedPassword)
-                .phoneNumber(userSaveRequest.getPhoneNumber())
-                .email(userSaveRequest.getEmail())
-                .role(Role.CLIENT)
-                .build();
+        User user = userSaveRequest.toEntity(encodedPassword);
 
         return userRepository.save(user);
     }

@@ -1,8 +1,9 @@
 package com.project.food_ordering_service.domain.user.service;
 
+import com.project.food_ordering_service.domain.user.dto.UserSaveRequest;
+import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.exception.DuplicatedEmailException;
-import com.project.food_ordering_service.domain.user.dto.UserSaveRequest;
 import com.project.food_ordering_service.domain.user.exception.DuplicatedLoginIdException;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +34,17 @@ public class UserService {
         }
 
         String encodedPassword = passwordEncoder.encode(userSaveRequest.getPassword());
-        userSaveRequest.setPassword(encodedPassword);
+//        userSaveRequest.setPassword(encodedPassword);
 
-        User savedUser = userRepository.save(userSaveRequest.toEntity());
-        return savedUser;
+        User user = User.builder()
+                .loginId(userSaveRequest.getLoginId())
+                .userName(userSaveRequest.getUserName())
+                .password(encodedPassword)
+                .phoneNumber(userSaveRequest.getPhoneNumber())
+                .email(userSaveRequest.getEmail())
+                .role(Role.CLIENT)
+                .build();
+
+        return userRepository.save(user);
     }
 }

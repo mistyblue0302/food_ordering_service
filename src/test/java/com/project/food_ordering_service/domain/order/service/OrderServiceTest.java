@@ -72,7 +72,6 @@ class OrderServiceTest {
                 .build();
 
         RestaurantRequest restaurantRequest = RestaurantRequest.builder()
-                .id(TestUtil.RESTAURANT_ID)
                 .name("Test Restaurant")
                 .address("Test Address")
                 .build();

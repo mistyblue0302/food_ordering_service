@@ -13,7 +13,6 @@ import com.project.food_ordering_service.domain.user.exception.UserNotFoundExcep
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
 import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -37,10 +36,9 @@ public class OrderService {
         Long userId = jwtAuthentication.getId();
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
         Restaurant restaurant = Restaurant.builder()
-                .id(orderRequest.getRestaurantRequest().getId())
                 .name(orderRequest.getRestaurantRequest().getName())
                 .address(orderRequest.getRestaurantRequest().getAddress())
                 .build();
@@ -49,6 +47,9 @@ public class OrderService {
 
         Order order = Order.builder()
                 .user(user)
+                .customerName(orderRequest.getCustomerName())
+                .deliveryAddress(orderRequest.getDeliveryAddress())
+                .customerPhone(orderRequest.getCustomerPhone())
                 .restaurant(restaurant)
                 .status(OrderStatus.ORDERED)
                 .build();
@@ -57,13 +58,13 @@ public class OrderService {
     }
 
     @Transactional
-    public void requestDelivery(JwtAuthentication jwtAuthentication, Long orderId) {
+    public Order requestDelivery(JwtAuthentication jwtAuthentication, Long orderId) {
         if (!jwtAuthentication.getRole().equals(Role.OWNER)) {
             throw new AccessDeniedException("사장만 배달을 요청할 수 있습니다.");
         }
 
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException());
+                .orElseThrow(OrderNotFoundException::new);
 
         // 주문 상태는 ORDERED일 때만 배달 요청이 가능하도록 설정
         if (order.getStatus() != OrderStatus.ORDERED) {
@@ -71,7 +72,7 @@ public class OrderService {
         }
 
         order.setStatus(OrderStatus.COMPLETED);
-        orderRepository.save(order);
+        return orderRepository.save(order);
     }
 
     public Page<Order> getOrders(Pageable pageable) {

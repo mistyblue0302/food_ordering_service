@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @Getter : Lombok 라이브러리에서 제공하는 애노테이션으로 getter 메소드를 자동으로 생성
@@ -34,10 +33,6 @@ public class UserSaveRequest {
 
     @NotNull(message = "{role.notNull}")
     private Role role;
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public User toEntity(String encodedPassword) {
         return User.builder()

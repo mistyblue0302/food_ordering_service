@@ -134,7 +134,7 @@ class OrderServiceTest {
         Order order = Order.builder()
                 .user(savedUser)
                 .restaurant(savedRestaurant)
-                .status(OrderStatus.ORDERED)
+                .status(OrderStatus.PREPARED)
                 .build();
 
         // when
@@ -143,7 +143,7 @@ class OrderServiceTest {
         orderService.requestDelivery(jwtAuthentication, orderId);
 
         // then
-        assertEquals(OrderStatus.COMPLETED, order.getStatus()); // 상태가 COMPLETED로 변경되었는지 검증
+        assertEquals(OrderStatus.DELIVERY_REQUESTED, order.getStatus()); // 상태가 COMPLETED로 변경되었는지 검증
         verify(orderRepository).save(order);
     }
 

@@ -65,12 +65,12 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException());
 
-        // 주문 상태는 ORDERED일 때만 배달 요청이 가능하도록 설정
-        if (order.getStatus() != OrderStatus.ORDERED) {
+        // 주문 상태가 조리 완료되었는지 확인
+        if (order.getStatus() != OrderStatus.PREPARED) {
             throw new IllegalStateException("주문 상태가 올바르지 않습니다.");
         }
 
-        order.setStatus(OrderStatus.COMPLETED);
+        order.setStatus(OrderStatus.DELIVERY_REQUESTED);
         orderRepository.save(order);
     }
 

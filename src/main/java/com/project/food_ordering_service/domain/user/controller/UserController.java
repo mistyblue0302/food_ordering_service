@@ -1,16 +1,13 @@
 package com.project.food_ordering_service.domain.user.controller;
 
-import com.project.food_ordering_service.domain.user.dto.UserSaveRequest;
-import com.project.food_ordering_service.domain.user.dto.UserSaveResponse;
+import com.project.food_ordering_service.domain.user.dto.*;
+import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @RestController : 해당 클래스가 Restful 웹 서비스의 컨트롤러임을 나타내는 애노테이션으로 HTTP 요청과 응답을 처리하는 컨트롤러로 사용
@@ -27,8 +24,21 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserSaveResponse> addUser(
-        @RequestBody @Validated UserSaveRequest userSaveRequest) {
-        userService.signUp(userSaveRequest);
+            @RequestBody @Validated UserSaveRequest userSaveRequest) {
+        userService.addUser(userSaveRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<UserGetResponse> getUser(@PathVariable Long userId) {
+        User user = userService.findUserById(userId);
+        UserGetResponse userGetResponse = UserGetResponse.from(user);
+        return ResponseEntity.ok(userGetResponse);
+    }
+
+    @PatchMapping
+    public ResponseEntity<UserPatchResponse> modifyUser(@PathVariable Long userId, @RequestBody UserPatchRequest userPathchRequest) {
+        User user = userService.modifyUser(userId, userPathchRequest);
+        return new ResponseEntity<>(UserPatchResponse.from(user), HttpStatus.OK);
     }
 }

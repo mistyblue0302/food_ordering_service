@@ -39,39 +39,39 @@ class UserServiceTest {
     @Test
     @DisplayName("중복 이메일 예외 발생 테스트")
     void DuplicatedEmailExceptionTest() throws Exception {
-        //given
+        // given
         given(userRepository.existsByEmail(anyString()))
                 .willReturn(true);
 
-        //when
-        assertThatThrownBy(() -> userService.signUp(createUser()))
-                //then
+        // when
+        assertThatThrownBy(() -> userService.addUser(createUser()))
+                // then
                 .isInstanceOf(DuplicatedEmailException.class);
     }
 
     @Test
     @DisplayName("중복 로그인 아이디 예외 발생 테스트")
     void DuplicatedLoginIdExceptionTest() throws Exception {
-        //given
+        // given
         given(userRepository.existsByLoginId(anyString()))
                 .willReturn(true);
 
-        //when
-        assertThatThrownBy(() -> userService.signUp(createUser()))
-                //then
+        // when
+        assertThatThrownBy(() -> userService.addUser(createUser()))
+                // then
                 .isInstanceOf(DuplicatedLoginIdException.class);
     }
 
     @Test
     @DisplayName("회원가입 성공 테스트")
-    void addUserTest() throws Exception {
-        //given
+    void addUser() {
+        // given
         given(userRepository.existsByEmail(anyString())).willReturn(false);
         given(userRepository.existsByLoginId(anyString())).willReturn(false);
 
         UserSaveRequest userSaveRequest = createUser();
 
-        //when
+        // when
         User savedUser = User.builder()
                 .id(1L)
                 .loginId(userSaveRequest.getLoginId())
@@ -82,9 +82,9 @@ class UserServiceTest {
                 .role(userSaveRequest.getRole())
                 .build();
 
-        userService.signUp(userSaveRequest);
+        userService.addUser(userSaveRequest);
 
-        //then
+        // then
         assertEquals(userSaveRequest.getLoginId(), savedUser.getLoginId());
         assertEquals(userSaveRequest.getUserName(), savedUser.getUserName());
         assertEquals(userSaveRequest.getEmail(), savedUser.getEmail());

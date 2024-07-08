@@ -57,7 +57,7 @@ class UserControllerTest {
             .email("test@gmail.com")
             .build();
 
-        Mockito.when(userService.signUp(any())).thenReturn(savedUser);
+        Mockito.when(userService.addUser(any())).thenReturn(savedUser);
 
         //when
         mockMvc.perform(post("/users")

@@ -13,7 +13,13 @@ public class OrderResponse {
 
     private Long userId;
 
-    private OrderStatus status;
+    private String customerName;
 
+    private String deliveryAddress;
+
+    private String customerPhone;
+
+    private OrderStatus status;
+    
     private RestaurantResponse restaurantResponse;
 }

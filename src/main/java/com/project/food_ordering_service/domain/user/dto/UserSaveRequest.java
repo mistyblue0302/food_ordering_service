@@ -1,10 +1,11 @@
 package com.project.food_ordering_service.domain.user.dto;
 
+import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.domain.user.entity.User;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @Getter : Lombok 라이브러리에서 제공하는 애노테이션으로 getter 메소드를 자동으로 생성
@@ -12,7 +13,6 @@ import lombok.Setter;
  */
 
 @Getter
-@Setter
 @Builder
 public class UserSaveRequest {
 
@@ -31,17 +31,17 @@ public class UserSaveRequest {
     @NotBlank(message = "{email.notBlank}")
     private String email;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    @NotNull(message = "{role.notNull}")
+    private Role role;
 
-    public User toEntity() {
+    public User toEntity(String encodedPassword) {
         return User.builder()
-            .loginId(this.loginId)
-            .userName(this.userName)
-            .password(this.password)
-            .phoneNumber(this.phoneNumber)
-            .email(this.email)
-            .build();
+                .loginId(this.loginId)
+                .userName(this.userName)
+                .password(encodedPassword)
+                .phoneNumber(this.phoneNumber)
+                .email(this.email)
+                .role(this.role)
+                .build();
     }
 }

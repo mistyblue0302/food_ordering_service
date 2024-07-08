@@ -13,7 +13,6 @@ import com.project.food_ordering_service.domain.user.exception.UserNotFoundExcep
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
 import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;

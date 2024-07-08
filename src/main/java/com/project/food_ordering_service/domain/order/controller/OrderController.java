@@ -30,35 +30,44 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(
-        @AuthenticationPrincipal JwtAuthentication jwtAuthentication,
-        @RequestBody @Validated OrderRequest orderRequest) {
+            @AuthenticationPrincipal JwtAuthentication jwtAuthentication,
+            @RequestBody @Validated OrderRequest orderRequest) {
+
         Order order = orderService.createOrder(jwtAuthentication, orderRequest);
 
         RestaurantResponse restaurantResponse = RestaurantResponse.builder()
-            .id(order.getRestaurant().getId())
-            .name(order.getRestaurant().getName())
-            .address(order.getRestaurant().getAddress())
-            .build();
+                .id(order.getRestaurant().getId())
+                .name(order.getRestaurant().getName())
+                .address(order.getRestaurant().getAddress())
+                .build();
 
         return ResponseEntity.ok(OrderResponse.builder()
-            .id(order.getId())
-            .userId(order.getUser().getId())
-            .status(order.getStatus())
-            .restaurantResponse(restaurantResponse)
-            .build());
+                .id(order.getId())
+                .userId(order.getUser().getId())
+                .status(order.getStatus())
+                .restaurantResponse(restaurantResponse)
+                .build());
+    }
+
+    @PostMapping("/{orderId}/delivery")
+    public ResponseEntity<Void> requestDelivery(
+            @AuthenticationPrincipal JwtAuthentication jwtAuthentication,
+            @PathVariable Long orderId) {
+        orderService.requestDelivery(jwtAuthentication, orderId);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping
     public ResponseEntity<Page<Order>> getOrders(
-        @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<Order> orders = orderService.getOrders(pageable);
         return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<Page<Order>> getOrdersByUser(
-        @PathVariable Long userId,
-        @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PathVariable Long userId,
+            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<Order> orders = orderService.getOrdersByUser(userId, pageable);
         return ResponseEntity.ok(orders);
     }

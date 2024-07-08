@@ -36,10 +36,9 @@ public class OrderService {
         Long userId = jwtAuthentication.getId();
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
         Restaurant restaurant = Restaurant.builder()
-                .id(orderRequest.getRestaurantRequest().getId())
                 .name(orderRequest.getRestaurantRequest().getName())
                 .address(orderRequest.getRestaurantRequest().getAddress())
                 .build();
@@ -48,6 +47,9 @@ public class OrderService {
 
         Order order = Order.builder()
                 .user(user)
+                .customerName(orderRequest.getCustomerName())
+                .deliveryAddress(orderRequest.getDeliveryAddress())
+                .customerPhone(orderRequest.getCustomerPhone())
                 .restaurant(restaurant)
                 .status(OrderStatus.ORDERED)
                 .build();

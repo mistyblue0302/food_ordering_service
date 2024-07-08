@@ -35,6 +35,19 @@ public class OrderController {
 
         Order order = orderService.createOrder(jwtAuthentication, orderRequest);
 
+        return getOrderResponse(order);
+    }
+
+    @GetMapping("/{orderId}/delivery")
+    public ResponseEntity<OrderResponse> requestDelivery(
+            @AuthenticationPrincipal JwtAuthentication jwtAuthentication,
+            @PathVariable Long orderId) {
+        Order order = orderService.requestDelivery(jwtAuthentication, orderId);
+
+        return getOrderResponse(order);
+    }
+
+    private ResponseEntity<OrderResponse> getOrderResponse(Order order) {
         RestaurantResponse restaurantResponse = RestaurantResponse.builder()
                 .id(order.getRestaurant().getId())
                 .name(order.getRestaurant().getName())
@@ -44,17 +57,12 @@ public class OrderController {
         return ResponseEntity.ok(OrderResponse.builder()
                 .id(order.getId())
                 .userId(order.getUser().getId())
+                .customerName(order.getCustomerName())
+                .deliveryAddress(order.getDeliveryAddress())
+                .customerPhone(order.getCustomerPhone())
                 .status(order.getStatus())
                 .restaurantResponse(restaurantResponse)
                 .build());
-    }
-
-    @PostMapping("/{orderId}/delivery")
-    public ResponseEntity<Void> requestDelivery(
-            @AuthenticationPrincipal JwtAuthentication jwtAuthentication,
-            @PathVariable Long orderId) {
-        orderService.requestDelivery(jwtAuthentication, orderId);
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping

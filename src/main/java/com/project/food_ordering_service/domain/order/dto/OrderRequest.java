@@ -8,7 +8,11 @@ import lombok.Getter;
 @Builder
 public class OrderRequest {
 
-    private Long id;
+    private String customerName;
+
+    private String deliveryAddress;
+
+    private String customerPhone;
 
     private RestaurantRequest restaurantRequest;
 }

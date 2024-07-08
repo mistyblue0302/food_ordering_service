@@ -57,13 +57,13 @@ public class OrderService {
     }
 
     @Transactional
-    public void requestDelivery(JwtAuthentication jwtAuthentication, Long orderId) {
+    public Order requestDelivery(JwtAuthentication jwtAuthentication, Long orderId) {
         if (!jwtAuthentication.getRole().equals(Role.OWNER)) {
             throw new AccessDeniedException("사장만 배달을 요청할 수 있습니다.");
         }
 
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException());
+                .orElseThrow(OrderNotFoundException::new);
 
         // 주문 상태가 조리 완료되었는지 확인
         if (order.getStatus() != OrderStatus.PREPARED) {
@@ -71,7 +71,7 @@ public class OrderService {
         }
 
         order.updateOrderStatus(OrderStatus.DELIVERY_REQUESTED);
-        orderRepository.save(order);
+        return orderRepository.save(order);
     }
 
     public Page<Order> getOrders(Pageable pageable) {

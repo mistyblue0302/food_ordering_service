@@ -1,6 +1,7 @@
 package com.project.food_ordering_service.domain.user.service;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.*;
 
 import com.project.food_ordering_service.domain.user.dto.UserSaveRequest;
@@ -8,6 +9,7 @@ import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.exception.DuplicatedEmailException;
 import com.project.food_ordering_service.domain.user.exception.DuplicatedLoginIdException;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
+import com.project.food_ordering_service.domain.utils.TestUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,12 +41,12 @@ class UserServiceTest {
     void DuplicatedEmailExceptionTest() throws Exception {
         //given
         given(userRepository.existsByEmail(anyString()))
-            .willReturn(true);
+                .willReturn(true);
 
         //when
         assertThatThrownBy(() -> userService.signUp(createUser()))
-            //then
-            .isInstanceOf(DuplicatedEmailException.class);
+                //then
+                .isInstanceOf(DuplicatedEmailException.class);
     }
 
     @Test
@@ -52,35 +54,52 @@ class UserServiceTest {
     void DuplicatedLoginIdExceptionTest() throws Exception {
         //given
         given(userRepository.existsByLoginId(anyString()))
-            .willReturn(true);
+                .willReturn(true);
 
         //when
         assertThatThrownBy(() -> userService.signUp(createUser()))
-            //then
-            .isInstanceOf(DuplicatedLoginIdException.class);
+                //then
+                .isInstanceOf(DuplicatedLoginIdException.class);
     }
 
     @Test
     @DisplayName("회원가입 성공 테스트")
     void addUserTest() throws Exception {
-        //given, when
-        given(userRepository.existsByEmail(anyString()))
-            .willReturn(false);
-        given(userRepository.existsByLoginId(anyString()))
-            .willReturn(false);
+        //given
+        given(userRepository.existsByEmail(anyString())).willReturn(false);
+        given(userRepository.existsByLoginId(anyString())).willReturn(false);
 
-        userService.signUp(createUser());
+        UserSaveRequest userSaveRequest = createUser();
+
+        //when
+        User savedUser = User.builder()
+                .id(1L)
+                .loginId(userSaveRequest.getLoginId())
+                .userName(userSaveRequest.getUserName())
+                .password(userSaveRequest.getPassword())
+                .phoneNumber(userSaveRequest.getPhoneNumber())
+                .email(userSaveRequest.getEmail())
+                .role(userSaveRequest.getRole())
+                .build();
+
+        userService.signUp(userSaveRequest);
 
         //then
-        then(userRepository).should(times(1)).save(any(User.class));
+        assertEquals(userSaveRequest.getLoginId(), savedUser.getLoginId());
+        assertEquals(userSaveRequest.getUserName(), savedUser.getUserName());
+        assertEquals(userSaveRequest.getEmail(), savedUser.getEmail());
+        assertEquals(userSaveRequest.getPhoneNumber(), savedUser.getPhoneNumber());
+        assertEquals(userSaveRequest.getRole(), savedUser.getRole());
     }
 
     private UserSaveRequest createUser() {
         return UserSaveRequest.builder()
-            .loginId("testId")
-            .userName("testUserName")
-            .phoneNumber("010-1234-5678")
-            .email("test@gmail.com")
-            .build();
+                .loginId("testId")
+                .userName("testUserName")
+                .password("testPassword")
+                .phoneNumber("010-1234-5678")
+                .email("test@gmail.com")
+                .role(TestUtil.ROLE_CLIENT)
+                .build();
     }
 }

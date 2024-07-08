@@ -15,7 +15,6 @@ import jakarta.persistence.Table;
 import lombok.*;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "ORDERS")
 @Builder
@@ -36,4 +35,8 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+
+    public void updateOrderStatus(OrderStatus orderStatus) {
+        this.status = orderStatus;
+    }
 }

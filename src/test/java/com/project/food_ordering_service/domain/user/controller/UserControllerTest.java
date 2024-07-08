@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.food_ordering_service.domain.user.dto.UserSaveRequest;
 import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.service.UserService;
+import com.project.food_ordering_service.domain.utils.TestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,22 +50,23 @@ class UserControllerTest {
         UserSaveRequest request = createUser();
 
         User savedUser = User.builder()
-            .id(1L)
-            .loginId("testId")
-            .userName("testUserName")
-            .password("testPassword")
-            .phoneNumber("010-1234-5678")
-            .email("test@gmail.com")
-            .build();
+                .id(1L)
+                .loginId("testId")
+                .userName("testUserName")
+                .password("testPassword")
+                .phoneNumber("010-1234-5678")
+                .email("test@gmail.com")
+                .role(TestUtil.ROLE_CLIENT)
+                .build();
 
         Mockito.when(userService.addUser(any())).thenReturn(savedUser);
 
         //when
         mockMvc.perform(post("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-            //then
-            .andExpect(status().isCreated());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                //then
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -72,25 +74,26 @@ class UserControllerTest {
     void addUser_fail_Test() throws Exception {
         //given
         UserSaveRequest request = UserSaveRequest.builder()
-            .loginId("testLoginIdFail")
-            .password("testPassword")
-            .build();
+                .loginId("testLoginIdFail")
+                .password("testPassword")
+                .build();
 
         //when
         mockMvc.perform(post("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-            //then
-            .andExpect(status().isBadRequest());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                //then
+                .andExpect(status().isBadRequest());
     }
 
     private UserSaveRequest createUser() {
         return UserSaveRequest.builder()
-            .loginId("testId")
-            .userName("testUserName")
-            .password("testPassword")
-            .phoneNumber("010-1234-5678")
-            .email("test@gmail.com")
-            .build();
+                .loginId("testId")
+                .userName("testUserName")
+                .password("testPassword")
+                .phoneNumber("010-1234-5678")
+                .email("test@gmail.com")
+                .role(TestUtil.ROLE_CLIENT)
+                .build();
     }
 }

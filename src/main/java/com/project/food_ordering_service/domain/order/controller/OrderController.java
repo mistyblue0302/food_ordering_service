@@ -2,6 +2,7 @@ package com.project.food_ordering_service.domain.order.controller;
 
 import com.project.food_ordering_service.domain.order.dto.OrderRequest;
 import com.project.food_ordering_service.domain.order.dto.OrderResponse;
+import com.project.food_ordering_service.domain.order.dto.OrderStateRequest;
 import com.project.food_ordering_service.domain.order.entity.Order;
 import com.project.food_ordering_service.domain.order.service.OrderService;
 import com.project.food_ordering_service.domain.restaurant.dto.RestaurantResponse;
@@ -38,11 +39,12 @@ public class OrderController {
         return getOrderResponse(order);
     }
 
-    @GetMapping("/{orderId}/delivery")
+    @GetMapping("/{orderId}/state")
     public ResponseEntity<OrderResponse> requestDelivery(
             @AuthenticationPrincipal JwtAuthentication jwtAuthentication,
-            @PathVariable Long orderId) {
-        Order order = orderService.requestDelivery(jwtAuthentication, orderId);
+            @PathVariable Long orderId,
+            @RequestBody OrderStateRequest stateRequest) {
+        Order order = orderService.requestDelivery(jwtAuthentication, orderId, stateRequest);
 
         return getOrderResponse(order);
     }

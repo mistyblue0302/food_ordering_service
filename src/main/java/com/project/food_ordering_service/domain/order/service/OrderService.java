@@ -1,6 +1,7 @@
 package com.project.food_ordering_service.domain.order.service;
 
 import com.project.food_ordering_service.domain.order.dto.OrderRequest;
+import com.project.food_ordering_service.domain.order.dto.OrderStateRequest;
 import com.project.food_ordering_service.domain.order.entity.Order;
 import com.project.food_ordering_service.domain.order.entity.OrderStatus;
 import com.project.food_ordering_service.domain.order.exception.OrderNotFoundException;
@@ -58,7 +59,8 @@ public class OrderService {
     }
 
     @Transactional
-    public Order requestDelivery(JwtAuthentication jwtAuthentication, Long orderId) {
+    public Order requestDelivery(JwtAuthentication jwtAuthentication, Long orderId,
+            OrderStateRequest stateRequest) {
         if (!jwtAuthentication.getRole().equals(Role.OWNER)) {
             throw new AccessDeniedException("사장만 배달을 요청할 수 있습니다.");
         }
@@ -71,7 +73,11 @@ public class OrderService {
             throw new IllegalStateException("주문 상태가 올바르지 않습니다.");
         }
 
-        order.updateOrderStatus(OrderStatus.DELIVERY_REQUESTED);
+        if (stateRequest.getStatus() != OrderStatus.DELIVERY_REQUESTED) {
+            throw new IllegalStateException("주문 변경 요청 상태를 확인해주세요.");
+        }
+
+        order.updateOrderStatus(stateRequest.getStatus());
         return orderRepository.save(order);
     }
 

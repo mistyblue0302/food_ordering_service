@@ -1,12 +1,15 @@
 package com.project.food_ordering_service.domain.order.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.project.food_ordering_service.domain.order.dto.OrderRequest;
+import com.project.food_ordering_service.domain.order.dto.OrderStateRequest;
 import com.project.food_ordering_service.domain.order.entity.Order;
 import com.project.food_ordering_service.domain.order.entity.OrderStatus;
 import com.project.food_ordering_service.domain.order.repository.OrderRepository;
@@ -27,10 +30,8 @@ import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.impl.DefaultClaims;
 import io.jsonwebtoken.impl.DefaultJws;
 import io.jsonwebtoken.impl.DefaultJwsHeader;
-
 import java.util.Date;
 import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.access.AccessDeniedException;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -85,7 +85,9 @@ class OrderServiceTest {
     @DisplayName("주문 성공 테스트")
     void order_success() {
         // given
-        JwtHolder jwtHolder = new JwtHolder(createMockClaims(TestUtil.USER_ID, "testToken", JwtProperties.ACCESS_TOKEN_NAME, Role.CLIENT), "testToken");
+        JwtHolder jwtHolder = new JwtHolder(
+                createMockClaims(TestUtil.USER_ID, "testToken", JwtProperties.ACCESS_TOKEN_NAME,
+                        Role.CLIENT), "testToken");
         JwtAuthentication jwtAuthentication = new JwtAuthentication(jwtHolder);
 
         when(userRepository.findById(TestUtil.USER_ID)).thenReturn(Optional.of(TestUtil.savedUser));
@@ -98,7 +100,8 @@ class OrderServiceTest {
 
         when(restaurantRepository.save(any(Restaurant.class))).thenReturn(savedRestaurant);
         when(orderRepository.save(any(Order.class))).thenReturn(
-                Order.builder().user(TestUtil.savedUser).restaurant(savedRestaurant).status(OrderStatus.ORDERED).build());
+                Order.builder().user(TestUtil.savedUser).restaurant(savedRestaurant)
+                        .status(OrderStatus.ORDERED).build());
 
         // when
         Order createdOrder = orderService.createOrder(jwtAuthentication, orderRequest);
@@ -114,7 +117,9 @@ class OrderServiceTest {
     @DisplayName("주문 실패 테스트")
     void order_failed() {
         // given
-        JwtHolder jwtHolder = new JwtHolder(createMockClaims(TestUtil.USER_ID, "testToken", JwtProperties.ACCESS_TOKEN_NAME, Role.CLIENT), "testToken");
+        JwtHolder jwtHolder = new JwtHolder(
+                createMockClaims(TestUtil.USER_ID, "testToken", JwtProperties.ACCESS_TOKEN_NAME,
+                        Role.CLIENT), "testToken");
         JwtAuthentication jwtAuthentication = new JwtAuthentication(jwtHolder);
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -136,10 +141,14 @@ class OrderServiceTest {
                 .status(OrderStatus.PREPARED)
                 .build();
 
+        OrderStateRequest orderStateRequest = OrderStateRequest.builder()
+                .status(OrderStatus.DELIVERY_REQUESTED)
+                .build();
+
         // when
         when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
         JwtAuthentication jwtAuthentication = createJwtAuthentication(TestUtil.USER_ID, Role.OWNER);
-        orderService.requestDelivery(jwtAuthentication, orderId);
+        orderService.requestDelivery(jwtAuthentication, orderId, orderStateRequest);
 
         // then
         assertEquals(OrderStatus.DELIVERY_REQUESTED, order.getStatus()); // 상태가 COMPLETED로 변경되었는지 검증
@@ -157,16 +166,23 @@ class OrderServiceTest {
                 .status(OrderStatus.COMPLETED)
                 .build();
 
+        OrderStateRequest orderStateRequest = OrderStateRequest.builder()
+                .status(OrderStatus.DELIVERED)
+                .build();
+
         when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
 
         // when, then
         assertThrows(IllegalStateException.class, () -> {
-            orderService.requestDelivery(createJwtAuthentication(TestUtil.USER_ID, Role.OWNER), orderId);
+            orderService.requestDelivery(createJwtAuthentication(TestUtil.USER_ID, Role.OWNER),
+                    orderId, orderStateRequest);
         });
     }
 
     private JwtAuthentication createJwtAuthentication(Long userId, Role role) {
-        JwtHolder jwtHolder = new JwtHolder(createMockClaims(userId, "testToken", JwtProperties.ACCESS_TOKEN_NAME, role), "testToken");
+        JwtHolder jwtHolder = new JwtHolder(
+                createMockClaims(userId, "testToken", JwtProperties.ACCESS_TOKEN_NAME, role),
+                "testToken");
         return new JwtAuthentication(jwtHolder);
     }
 

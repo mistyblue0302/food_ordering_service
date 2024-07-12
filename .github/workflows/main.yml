@@ -38,6 +38,12 @@ jobs:
         env:
           KAKAO_SECRET: ${{ secrets.KAKAO_SECRET }}
         run: SPRING_PROFILES_ACTIVE=[test] ./gradlew test
+        
+      - name: Run Coverage
+        run: |
+          chmod +x gradlew
+          ./gradlew testCoverage
+
 
       - name: Test Coverage Report
         id: jacoco

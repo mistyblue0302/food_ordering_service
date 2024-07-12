@@ -14,7 +14,7 @@ java {
 
 tasks.named('test') {
     useJUnitPlatform()
-    finalizedBy jacocoTestReport
+    finalizedBy jacocoTestReport, jacocoTestCoverageVerification
 }
 
 configurations {
@@ -33,7 +33,7 @@ jacoco {
 }
 
 jacocoTestReport {
-    dependsOn test
+    executionData(fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec"))
     reports {
         xml.required = true
         html.required = true

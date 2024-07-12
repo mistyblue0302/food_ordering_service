@@ -39,6 +39,9 @@ jobs:
           KAKAO_SECRET: ${{ secrets.KAKAO_SECRET }}
         run: SPRING_PROFILES_ACTIVE=[test] ./gradlew test
 
+      - name: Check Tests w/ Test Coverage
+        run: ./gradlew testWithJacoco
+
       - name: Test Coverage Report
         id: jacoco
         uses: madrapps/jacoco-report@v1.6

@@ -12,11 +12,6 @@ java {
     sourceCompatibility = '17'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-    finalizedBy jacocoTestReport, jacocoTestCoverageVerification
-}
-
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -27,17 +22,21 @@ repositories {
     mavenCentral()
 }
 
+tasks.named('test') {
+    finalizedBy jacocoTestReport
+    useJUnitPlatform()
+}
 
 jacoco {
     toolVersion = "0.8.8" // 버전 명시
 }
 
 jacocoTestReport {
-    executionData(fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec"))
+    dependsOn test
     reports {
         xml.required = true
         html.required = true
-        csv.required = false
+    
     }
 }
 

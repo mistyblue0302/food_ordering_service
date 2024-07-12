@@ -37,7 +37,7 @@ jobs:
       - name: Test with Gradle
         env:
           KAKAO_SECRET: ${{ secrets.KAKAO_SECRET }}
-        run: ./gradlew test
+        run: SPRING_PROFILES_ACTIVE=[test] ./gradlew test
 
       - name: Test Coverage Report
         id: jacoco

@@ -23,8 +23,8 @@ repositories {
 }
 
 test {
-    finalizedBy jacocoTestReport
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
 jacoco {
@@ -35,7 +35,7 @@ jacocoTestReport {
     dependsOn test
     reports {
         xml.required = false
-        csv.required = false
+//        csv.required = false
         html.required = true
     }
 }
@@ -60,9 +60,9 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
+//tasks.named('test') {
+//    useJUnitPlatform()
+//}
 
 jar {
     enabled = false

@@ -35,9 +35,9 @@ jacoco {
 jacocoTestReport {
     dependsOn test
     reports {
-        xml.required = false
-//        csv.required = false
+        xml.required = true
         html.required = true
+        csv.required = false
     }
 }
 

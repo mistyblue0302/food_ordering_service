@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.5'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'jacoco'
 }
 
 group = 'com.project'
@@ -20,6 +21,25 @@ configurations {
 repositories {
     mavenCentral()
 }
+
+test {
+    finalizedBy jacocoTestReport
+    useJUnitPlatform()
+}
+
+jacoco {
+    toolVersion = "0.8.8" // 버전 명시
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = false
+        csv.required = false
+        html.required = true
+    }
+}
+
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

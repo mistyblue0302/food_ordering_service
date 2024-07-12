@@ -11,6 +11,8 @@ on:
     #      - feature/*
     # pull_request:
     # branches: [ "main" ]
+    
+permissions: write-all
 
 jobs:
   build:

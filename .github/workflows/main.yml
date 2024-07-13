@@ -1,22 +1,18 @@
 name: CI
 
 on:
-  pull_request:
+  push:
     branches:
       - main
       - feature/*
-    #  push:
-    #    branches:
-    #      - main
-    #      - feature/*
-    # pull_request:
-    # branches: [ "main" ]
+  pull_request:
+    branches:
+      - feature/*
 
 permissions: write-all
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     env:
       working-directory: ./

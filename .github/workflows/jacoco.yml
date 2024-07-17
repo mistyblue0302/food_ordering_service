@@ -1,13 +1,11 @@
-name: CI
+name: jacoco
 
 on:
-  push:
+  pull_request:
     branches:
       - main
       - feature/*
-  pull_request:
-    branches:
-      - feature/*
+
 
 permissions: write-all
 
@@ -41,7 +39,16 @@ jobs:
           KAKAO_SECRET: ${{ secrets.KAKAO_SECRET }}
         run: SPRING_PROFILES_ACTIVE=[test] ./gradlew --info test
 
-
+      - name: Test Coverage Report
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.6
+        with:
+          title: "⭐️Code Coverage"
+          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 70
+          min-coverage-changed-files: 70
+          update-comment: true
 
 
 

@@ -41,7 +41,7 @@ public class KakaoMapApi {
                 .build()
                 .toUri();
 
-        log.info(url.getQuery() + " url");
+//        log.info(url.getQuery() + " url");
         return restClient.get()
                 .uri(url)
                 .header("Authorization", kakaoHeader + kakaoSecretKey)

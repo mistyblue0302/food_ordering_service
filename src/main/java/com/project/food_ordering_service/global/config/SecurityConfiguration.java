@@ -29,15 +29,16 @@ public class SecurityConfiguration {
                 sessionManagement -> sessionManagement.sessionCreationPolicy(
                     SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
-                    //.anyRequest().permitAll()
-
                     /**
                      * /users와 /auth/login 엔드포인트에 대한 POST 요청은 인증 없이 접근 가능하도록 허용하고
                      * 다른 모든 요청은 인증이 필요합니다. (새로운 사용자 등록에 대해선 인증 x)
                      */
                     .requestMatchers(HttpMethod.POST, "/users").permitAll()
                     .requestMatchers("/auth/login").permitAll()
-//                .requestMatchers("/").permitAll()
+                    /**
+                     * 배달 요청은 사장님만 가능하도록 설정
+                     */
+                    .requestMatchers(HttpMethod.POST, "/orders/{orderId}/delivery").hasRole("OWNER")
                     .anyRequest().permitAll()
             )
             .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)

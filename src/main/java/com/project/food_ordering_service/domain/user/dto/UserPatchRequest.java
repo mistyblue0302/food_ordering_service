@@ -12,8 +12,11 @@ public class UserPatchRequest {
     private String loginId;
 
     @NotNull
-    private String name;
+    private String userName;
 
     @NotNull
     private String phoneNumber;
+
+    @NotNull
+    private String modifiedBy;
 }

@@ -29,16 +29,16 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/{userId}")
     public ResponseEntity<UserGetResponse> getUser(@PathVariable Long userId) {
         User user = userService.findUserById(userId);
         UserGetResponse userGetResponse = UserGetResponse.from(user);
         return ResponseEntity.ok(userGetResponse);
     }
 
-    @PatchMapping
-    public ResponseEntity<UserPatchResponse> modifyUser(@PathVariable Long userId, @RequestBody UserPatchRequest userPathchRequest) {
-        User user = userService.modifyUser(userId, userPathchRequest);
+    @PatchMapping("/{userId}")
+    public ResponseEntity<UserPatchResponse> modifyUser(@PathVariable Long userId, @RequestBody UserPatchRequest userPatchRequest) {
+        User user = userService.modifyUser(userId, userPatchRequest);
         return new ResponseEntity<>(UserPatchResponse.from(user), HttpStatus.OK);
     }
 }

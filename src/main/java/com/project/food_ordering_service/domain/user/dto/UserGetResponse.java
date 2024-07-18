@@ -2,7 +2,9 @@ package com.project.food_ordering_service.domain.user.dto;
 
 import com.project.food_ordering_service.domain.user.entity.User;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Builder
 public class UserGetResponse {
 

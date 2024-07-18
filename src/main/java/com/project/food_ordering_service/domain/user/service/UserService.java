@@ -58,8 +58,8 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException());
 
-        user.modify(userPatchRequest.getName(), userPatchRequest.getPhoneNumber(),
-                user.getModifiedBy());
+        user.modify(userPatchRequest.getUserName(), userPatchRequest.getPhoneNumber(),
+                userPatchRequest.getModifiedBy());
 
         return user;
     }

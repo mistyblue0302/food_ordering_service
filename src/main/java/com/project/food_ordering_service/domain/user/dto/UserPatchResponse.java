@@ -2,9 +2,11 @@ package com.project.food_ordering_service.domain.user.dto;
 
 import com.project.food_ordering_service.domain.user.entity.User;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Builder
 public class UserPatchResponse {
 

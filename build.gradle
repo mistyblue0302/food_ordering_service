@@ -36,10 +36,47 @@ jacocoTestReport {
     reports {
         xml.required = true
         html.required = true
-    
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "**/*dto*",
+                    "**/*exception*",
+                    "**/*utils*",
+                    "**/*Request*",
+                    "**/*Response*",
+                    "**/*Application*",
+            ])
+        }))
     }
 }
 
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            element = 'CLASS'
+
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.70
+            }
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.70
+            }
+            excludes = [
+                    "**/*dto*",
+                    "**/*exception*",
+                    "**/*utils*",
+                    "**/*Request*",
+                    "**/*Response*",
+                    "**/*Application*",
+            ]
+        }
+    }
+}
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

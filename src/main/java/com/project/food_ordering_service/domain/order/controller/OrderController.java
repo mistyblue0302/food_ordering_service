@@ -49,7 +49,6 @@ public class OrderController {
         return OrderResponse.getOrderResponse(order);
     }
 
-
     @GetMapping
     public ResponseEntity<Page<Order>> getOrders(
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {

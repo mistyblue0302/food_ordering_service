@@ -64,13 +64,10 @@ public class DeliveryController {
         return ResponseEntity.ok(DeliveryResponse.from(delivery));
     }
 
-    @GetMapping("/status/{status}")
-    public ResponseEntity<Page<DeliveryResponse>> getDeliveriesByStatus(
-            @PathVariable OrderStatus status,
+    @GetMapping
+    public ResponseEntity<Page<Delivery>> getDeliveries(
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-
-        Page<Delivery> deliveries = deliveryService.getDeliveriesByStatus(status, pageable);
-        Page<DeliveryResponse> deliveryResponses = deliveries.map(DeliveryResponse::from);
-        return ResponseEntity.ok(deliveryResponses);
+        Page<Delivery> deliveries = deliveryService.getDeliveries(pageable);
+        return ResponseEntity.ok(deliveries);
     }
 }

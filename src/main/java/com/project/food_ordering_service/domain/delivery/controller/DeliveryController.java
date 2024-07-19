@@ -31,12 +31,8 @@ public class DeliveryController {
             @PathVariable Long orderId,
             @RequestBody DeliveryRequest deliveryRequest) {
 
-        if (!jwtAuthentication.getRole().equals(Role.RIDER)) {
-            throw new AccessDeniedException("배달원만 배달을 할 수 있습니다.");
-        }
-
         Long riderId = jwtAuthentication.getId();
-        Delivery delivery = deliveryService.assignDelivery(orderId, riderId);
+        Delivery delivery = deliveryService.assignDelivery(orderId, riderId, jwtAuthentication);
 
         return ResponseEntity.ok(DeliveryResponse.from(delivery));
     }

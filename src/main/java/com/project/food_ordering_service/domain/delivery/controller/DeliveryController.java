@@ -60,9 +60,9 @@ public class DeliveryController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Delivery>> getDeliveries(
+    public ResponseEntity<Page<DeliveryResponse>> getDeliveries(
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Delivery> deliveries = deliveryService.getDeliveries(pageable);
-        return ResponseEntity.ok(deliveries);
+        Page<DeliveryResponse> deliveryResponses = deliveryService.getDeliveries(pageable);
+        return ResponseEntity.ok(deliveryResponses);
     }
 }

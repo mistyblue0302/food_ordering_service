@@ -1,5 +1,6 @@
 package com.project.food_ordering_service.domain.delivery.service;
 
+import com.project.food_ordering_service.domain.delivery.dto.DeliveryResponse;
 import com.project.food_ordering_service.domain.delivery.entity.Delivery;
 import com.project.food_ordering_service.domain.delivery.exception.DeliveryNotFoundException;
 import com.project.food_ordering_service.domain.delivery.repository.DeliveryRepository;
@@ -89,9 +90,9 @@ public class DeliveryService {
                 .orElseThrow(DeliveryNotFoundException::new);
     }
 
-    @Transactional(readOnly = true)
-    public Page<Delivery> getDeliveries(Pageable pageable) {
-        return deliveryRepository.findAll(pageable);
+    public Page<DeliveryResponse> getDeliveries(Pageable pageable) {
+        Page<Delivery> deliveries = deliveryRepository.findAll(pageable);
+        return deliveries.map(DeliveryResponse::from);
     }
 
     @Transactional(readOnly = true)

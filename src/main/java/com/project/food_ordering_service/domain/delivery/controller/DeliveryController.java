@@ -5,7 +5,6 @@ import com.project.food_ordering_service.domain.delivery.dto.DeliveryResponse;
 import com.project.food_ordering_service.domain.delivery.dto.DeliveryStatusRequest;
 import com.project.food_ordering_service.domain.delivery.entity.Delivery;
 import com.project.food_ordering_service.domain.delivery.service.DeliveryService;
-import com.project.food_ordering_service.domain.order.entity.OrderStatus;
 import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import lombok.RequiredArgsConstructor;

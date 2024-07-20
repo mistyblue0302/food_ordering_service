@@ -9,6 +9,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
-
-    Page<Delivery> findByStatus(OrderStatus status, Pageable pageable);
 }

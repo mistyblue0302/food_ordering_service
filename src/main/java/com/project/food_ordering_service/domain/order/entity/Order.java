@@ -1,5 +1,6 @@
 package com.project.food_ordering_service.domain.order.entity;
 
+import com.project.food_ordering_service.domain.delivery.entity.Delivery;
 import com.project.food_ordering_service.domain.restaurant.entity.Restaurant;
 import com.project.food_ordering_service.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -7,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity

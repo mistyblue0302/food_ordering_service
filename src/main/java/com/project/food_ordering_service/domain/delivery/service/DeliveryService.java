@@ -44,17 +44,12 @@ public class DeliveryService {
         User rider = userRepository.findById(riderId)
                 .orElseThrow(UserNotFoundException::new);
 
-        if (rider.getRole() != Role.RIDER) {
-            throw new IllegalArgumentException("배달원만 배달을 할 수 있습니다.");
-        }
+        order.updateOrderStatus(OrderStatus.RECEIVED);
 
         Delivery delivery = Delivery.builder()
                 .order(order)
                 .rider(rider)
-                .status(OrderStatus.COMPLETED) // 배달원이 배달을 수락한 상태
                 .build();
-
-        order.updateOrderStatus(OrderStatus.ONTHEWAY);
 
         deliveryRepository.save(delivery);
         orderRepository.save(order);
@@ -63,23 +58,30 @@ public class DeliveryService {
     }
 
     @Transactional
-    public Delivery updateDeliveryStatus(Long deliveryId, OrderStatus status) {
+    public Delivery updateDeliveryStatus(Long deliveryId, OrderStatus status, JwtAuthentication jwtAuthentication) {
+        if (!jwtAuthentication.getRole().equals(Role.RIDER)) {
+            throw new AccessDeniedException("배달원만 배달 상태를 업데이트할 수 있습니다.");
+        }
+
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(DeliveryNotFoundException::new);
 
-        if (status == OrderStatus.ONTHEWAY && delivery.getStatus() != OrderStatus.COMPLETED) {
-            throw new IllegalStateException("배달원이 배달을 수락하지 않았습니다.");
-        }
+        Order order = delivery.getOrder();
 
-        if (status != OrderStatus.DELIVERED && delivery.getStatus() == OrderStatus.DELIVERED) {
-            throw new IllegalStateException("이미 배달 완료 상태입니다.");
+        if (status == OrderStatus.ONTHEWAY) {
+            delivery.startDelivery();
+        } else if (status == OrderStatus.DELIVERED) {
+            delivery.completeDelivery();
+        } else {
+            throw new IllegalArgumentException("잘못된 주문 상태입니다.");
         }
-
-        delivery.updateDeliveryStatus(status);
-        delivery.getOrder().updateOrderStatus(status);
 
         deliveryRepository.save(delivery);
-        orderRepository.save(delivery.getOrder());
+
+        if (status == OrderStatus.DELIVERED) {
+            order.updateOrderStatus(OrderStatus.DELIVERED);
+            orderRepository.save(order);
+        }
 
         return delivery;
     }
@@ -90,13 +92,9 @@ public class DeliveryService {
                 .orElseThrow(DeliveryNotFoundException::new);
     }
 
+    @Transactional(readOnly = true)
     public Page<DeliveryResponse> getDeliveries(Pageable pageable) {
         Page<Delivery> deliveries = deliveryRepository.findAll(pageable);
         return deliveries.map(DeliveryResponse::from);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<Delivery> getDeliveriesByStatus(OrderStatus status, Pageable pageable) {
-        return deliveryRepository.findByStatus(status, pageable);
     }
 }

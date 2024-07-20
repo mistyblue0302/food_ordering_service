@@ -23,7 +23,7 @@ public class Delivery {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
 
@@ -31,22 +31,19 @@ public class Delivery {
     @JoinColumn(name = "rider_id")
     private User rider;
 
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
-
     @Column(name = "started_at")
     private LocalDateTime startedAt;
 
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
-    public void updateDeliveryStatus(OrderStatus orderStatus) { // 배달 상황에 따라 배달 시작 시간, 완료 시간 저장
-        this.status = orderStatus;
+    public void startDelivery() {
+        this.startedAt = LocalDateTime.now();
+        this.order.updateOrderStatus(OrderStatus.ONTHEWAY);
+    }
 
-        if (orderStatus == OrderStatus.ONTHEWAY) {
-            this.startedAt = LocalDateTime.now();
-        } else if (orderStatus == OrderStatus.DELIVERED) {
-            this.completedAt = LocalDateTime.now();
-        }
+    public void completeDelivery() {
+        this.completedAt = LocalDateTime.now();
+        this.order.updateOrderStatus(OrderStatus.DELIVERED);
     }
 }

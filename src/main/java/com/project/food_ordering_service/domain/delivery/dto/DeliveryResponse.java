@@ -15,7 +15,7 @@ public class DeliveryResponse {
 
     private Long orderId;
     private Long riderId;
-    private OrderStatus status;
+    private OrderStatus orderStatus;
     private LocalDateTime startedAt;
     private LocalDateTime completedAt;
 
@@ -23,7 +23,7 @@ public class DeliveryResponse {
         return DeliveryResponse.builder()
                 .orderId(delivery.getOrder().getId())
                 .riderId(delivery.getRider().getId())
-                .status(delivery.getStatus())
+                .orderStatus(delivery.getOrder().getStatus())
                 .startedAt(delivery.getStartedAt())
                 .completedAt(delivery.getCompletedAt())
                 .build();

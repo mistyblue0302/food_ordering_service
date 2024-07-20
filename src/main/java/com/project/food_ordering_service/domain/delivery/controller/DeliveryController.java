@@ -5,7 +5,6 @@ import com.project.food_ordering_service.domain.delivery.dto.DeliveryResponse;
 import com.project.food_ordering_service.domain.delivery.dto.DeliveryStatusRequest;
 import com.project.food_ordering_service.domain.delivery.entity.Delivery;
 import com.project.food_ordering_service.domain.delivery.service.DeliveryService;
-import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,21 +30,18 @@ public class DeliveryController {
 
         Long riderId = jwtAuthentication.getId();
         Delivery delivery = deliveryService.assignDelivery(orderId, riderId, jwtAuthentication);
+        DeliveryResponse deliveryResponse = DeliveryResponse.from(delivery);
 
-        return ResponseEntity.ok(DeliveryResponse.from(delivery));
+        return ResponseEntity.ok(deliveryResponse);
     }
 
-    @PatchMapping("/{deliveryId}/status")
+    @PatchMapping("/{deliveryId}/state")
     public ResponseEntity<DeliveryResponse> updatedDeliveryStatus(
             @AuthenticationPrincipal JwtAuthentication jwtAuthentication,
             @PathVariable Long deliveryId,
             @RequestBody DeliveryStatusRequest deliveryStatusRequest) {
 
-        if (!jwtAuthentication.getRole().equals(Role.RIDER)) {
-            throw new AccessDeniedException("배달원만 배달 상태를 업데이트할 수 있습니다.");
-        }
-
-        Delivery delivery = deliveryService.updateDeliveryStatus(deliveryId, deliveryStatusRequest.getStatus());
+        Delivery delivery = deliveryService.updateDeliveryStatus(deliveryId, deliveryStatusRequest.getStatus(), jwtAuthentication);
 
         return ResponseEntity.ok(DeliveryResponse.from(delivery));
     }
@@ -54,7 +49,6 @@ public class DeliveryController {
     @GetMapping("/{deliveryId}")
     public ResponseEntity<DeliveryResponse> getDeliveryById(
             @PathVariable Long deliveryId) {
-
         Delivery delivery = deliveryService.getDeliveryById(deliveryId);
         return ResponseEntity.ok(DeliveryResponse.from(delivery));
     }

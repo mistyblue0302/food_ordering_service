@@ -30,8 +30,10 @@ import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.impl.DefaultClaims;
 import io.jsonwebtoken.impl.DefaultJws;
 import io.jsonwebtoken.impl.DefaultJwsHeader;
+
 import java.util.Date;
 import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,6 +41,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.access.AccessDeniedException;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -131,51 +134,53 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("배달 요청 성공 테스트")
-    void requestDelivery_success() {
+    @DisplayName("주문 상태 전환 성공 테스트")
+    void updateOrderStatusSuccess() {
         // given
         Long orderId = 1L;
         Order order = Order.builder()
+                .id(orderId)
                 .user(savedUser)
                 .restaurant(savedRestaurant)
-                .status(OrderStatus.PREPARED)
+                .status(OrderStatus.ORDERED)
                 .build();
 
-        OrderStateRequest orderStateRequest = OrderStateRequest.builder()
-                .status(OrderStatus.DELIVERY_REQUESTED)
+        OrderStateRequest stateRequest = OrderStateRequest.builder()
+                .status(OrderStatus.PREPARING)
                 .build();
 
         // when
-        when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
-        JwtAuthentication jwtAuthentication = createJwtAuthentication(TestUtil.USER_ID, Role.OWNER);
-        orderService.requestDelivery(jwtAuthentication, orderId, orderStateRequest);
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
+
+        Order updatedOrder = orderService.updateOrderStatus(createJwtAuthentication(1L, Role.OWNER), orderId, stateRequest);
 
         // then
-        assertEquals(OrderStatus.DELIVERY_REQUESTED, order.getStatus()); // 상태가 COMPLETED로 변경되었는지 검증
+        assertEquals(OrderStatus.PREPARING, updatedOrder.getStatus());
         verify(orderRepository).save(order);
     }
 
     @Test
-    @DisplayName("배달 요청 실패 테스트 : 주문 상태가 올바르지 않을 때")
-    void requestDelivery_failed_orderStatusNotCorrect() {
+    @DisplayName("주문 상태 전환 실패 테스트")
+    void updateOrderStatusFailed() {
         // given
         Long orderId = 1L;
         Order order = Order.builder()
+                .id(orderId)
                 .user(savedUser)
                 .restaurant(savedRestaurant)
+                .status(OrderStatus.ORDERED)
+                .build();
+
+        OrderStateRequest stateRequest = OrderStateRequest.builder()
                 .status(OrderStatus.COMPLETED)
                 .build();
 
-        OrderStateRequest orderStateRequest = OrderStateRequest.builder()
-                .status(OrderStatus.DELIVERED)
-                .build();
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+        JwtAuthentication jwtAuthentication = createJwtAuthentication(1L, Role.OWNER);
 
-        when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
-
-        // when, then
         assertThrows(IllegalStateException.class, () -> {
-            orderService.requestDelivery(createJwtAuthentication(TestUtil.USER_ID, Role.OWNER),
-                    orderId, orderStateRequest);
+            orderService.updateOrderStatus(jwtAuthentication, orderId, stateRequest);
         });
     }
 

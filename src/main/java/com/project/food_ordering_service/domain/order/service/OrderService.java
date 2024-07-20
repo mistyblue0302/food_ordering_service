@@ -59,26 +59,52 @@ public class OrderService {
     }
 
     @Transactional
-    public Order requestDelivery(JwtAuthentication jwtAuthentication, Long orderId,
-            OrderStateRequest stateRequest) {
+    public Order updateOrderStatus(JwtAuthentication jwtAuthentication, Long orderId,
+                                   OrderStateRequest stateRequest) {
         if (!jwtAuthentication.getRole().equals(Role.OWNER)) {
-            throw new AccessDeniedException("사장만 배달을 요청할 수 있습니다.");
+            throw new AccessDeniedException("사장만 주문 상태를 변경할 수 있습니다.");
         }
 
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(OrderNotFoundException::new);
 
-        // 주문 상태가 조리 완료되었는지 확인
-        if (order.getStatus() != OrderStatus.PREPARED) {
-            throw new IllegalStateException("주문 상태가 올바르지 않습니다.");
-        }
+        validateOrderStatus(order.getStatus(), stateRequest.getStatus());
 
-        if (stateRequest.getStatus() != OrderStatus.DELIVERY_REQUESTED) {
-            throw new IllegalStateException("주문 변경 요청 상태를 확인해주세요.");
-        }
-
+        // 상태 전환 검증 및 업데이트 처리
         order.updateOrderStatus(stateRequest.getStatus());
         return orderRepository.save(order);
+    }
+
+    private void validateOrderStatus(OrderStatus currentStatus, OrderStatus newStatus) {
+        switch (newStatus) {
+            case PREPARING:
+                if (currentStatus != OrderStatus.ORDERED) {
+                    throw new IllegalStateException("주문 상태가 올바르지 않습니다.");
+                }
+                break;
+            case COMPLETED:
+                if (currentStatus != OrderStatus.PREPARING) {
+                    throw new IllegalStateException("주문 상태가 올바르지 않습니다.");
+                }
+                break;
+            case DELIVERY_REQUESTED:
+                if (currentStatus != OrderStatus.COMPLETED) {
+                    throw new IllegalStateException("주문 상태가 올바르지 않습니다.");
+                }
+                break;
+            case ONTHEWAY:
+                if (currentStatus != OrderStatus.DELIVERY_REQUESTED) {
+                    throw new IllegalStateException("주문 상태가 올바르지 않습니다.");
+                }
+                break;
+            case DELIVERED:
+                if (currentStatus != OrderStatus.ONTHEWAY) {
+                    throw new IllegalStateException("주문 상태가 올바르지 않습니다.");
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("잘못된 상태 전환 요청입니다.");
+        }
     }
 
     public Page<Order> getOrders(Pageable pageable) {

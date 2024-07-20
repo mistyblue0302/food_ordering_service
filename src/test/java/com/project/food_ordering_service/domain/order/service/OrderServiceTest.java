@@ -41,7 +41,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.access.AccessDeniedException;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -142,21 +141,23 @@ class OrderServiceTest {
                 .id(orderId)
                 .user(savedUser)
                 .restaurant(savedRestaurant)
-                .status(OrderStatus.ORDERED)
+                .status(OrderStatus.PREPARED)
                 .build();
 
-        OrderStateRequest stateRequest = OrderStateRequest.builder()
-                .status(OrderStatus.PREPARING)
+        OrderStateRequest orderStateRequest = OrderStateRequest.builder()
+                .status(OrderStatus.DELIVERY_REQUESTED)
                 .build();
+
+        JwtAuthentication jwtAuthentication = createJwtAuthentication(TestUtil.USER_ID, Role.OWNER);
 
         // when
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
         when(orderRepository.save(any(Order.class))).thenReturn(order);
 
-        Order updatedOrder = orderService.updateOrderStatus(createJwtAuthentication(1L, Role.OWNER), orderId, stateRequest);
+        Order updatedOrder = orderService.updateOrderStatus(jwtAuthentication, orderId, orderStateRequest);
 
         // then
-        assertEquals(OrderStatus.PREPARING, updatedOrder.getStatus());
+        assertEquals(OrderStatus.DELIVERY_REQUESTED, updatedOrder.getStatus());
         verify(orderRepository).save(order);
     }
 

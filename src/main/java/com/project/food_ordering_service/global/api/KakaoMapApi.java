@@ -3,8 +3,8 @@ package com.project.food_ordering_service.global.api;
 import com.project.food_ordering_service.global.dto.request.KakaoMapApiRequest;
 import com.project.food_ordering_service.global.dto.response.KakaoMapApiResponse;
 import java.net.URI;
-import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -18,7 +18,7 @@ public class KakaoMapApi {
 
     public KakaoMapApi(RestClient.Builder builder) {
         this.restClient = builder.baseUrl("")
-            .build();
+                .build();
     }
 
     @Value("${kakao.secret}")
@@ -28,25 +28,42 @@ public class KakaoMapApi {
 
     public static final String kakaoHost = "https://dapi.kakao.com";
 
-    public static final String kakaoURL = "/v2/local/search/category.json";
+    public static final String kakaoURL = "/v2/local/search/";
 
     public ResponseEntity<KakaoMapApiResponse> getSearchPlaceByKeyword(
-        KakaoMapApiRequest kakaoMapApiRequest) {
+            KakaoMapApiRequest kakaoMapApiRequest) {
 
-        URI url = UriComponentsBuilder.fromHttpUrl(kakaoHost + kakaoURL)
-            .queryParam("category_group_code", "FD6")
-            .queryParam("x", kakaoMapApiRequest.getX())
-            .queryParam("y", kakaoMapApiRequest.getY())
-            .queryParam("radius", 2000) // 2km
-            .build()
-            .toUri();
+        URI url = UriComponentsBuilder.fromHttpUrl(kakaoHost + kakaoURL + "category.json")
+                .queryParam("category_group_code", "FD6")
+                .queryParam("x", kakaoMapApiRequest.getX())
+                .queryParam("y", kakaoMapApiRequest.getY())
+                .queryParam("radius", 2000) // 2km
+                .build()
+                .toUri();
 
         log.info(url.getQuery() + " url");
         return restClient.get()
-            .uri(url)
-            .header("Authorization", kakaoHeader + kakaoSecretKey)
-            .retrieve()
-            .toEntity(KakaoMapApiResponse.class);
+                .uri(url)
+                .header("Authorization", kakaoHeader + kakaoSecretKey)
+                .retrieve()
+                .toEntity(KakaoMapApiResponse.class);
+
+    }
+
+    public ResponseEntity<KakaoMapApiResponse> getSearchAddressByKeyword(String address
+    ) {
+
+        URI url = UriComponentsBuilder.fromHttpUrl(kakaoHost + kakaoURL + "address.json")
+                .queryParam("query", address)
+                .build()
+                .toUri();
+
+        log.info(url.getQuery() + " url");
+        return restClient.get()
+                .uri(url)
+                .header("Authorization", kakaoHeader + kakaoSecretKey)
+                .retrieve()
+                .toEntity(KakaoMapApiResponse.class);
 
     }
 }

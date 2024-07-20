@@ -205,7 +205,7 @@ class OrderServiceTest {
                 .build();
 
         OrderStateRequest stateRequest = OrderStateRequest.builder()
-                .status(OrderStatus.COMPLETED)
+                .status(OrderStatus.DELIVERY_REQUESTED)
                 .build();
 
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));

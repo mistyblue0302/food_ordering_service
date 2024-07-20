@@ -61,4 +61,11 @@ public class User {
 
     @Column(name = "modified_by")
     private String modifiedBy;
+
+    public void modify(String name, String phoneNumber, String modifiedBy) {
+        this.userName = name;
+        this.phoneNumber = phoneNumber;
+        this.modifiedAt = LocalDateTime.now();
+        this.modifiedBy = modifiedBy;
+    }
 }

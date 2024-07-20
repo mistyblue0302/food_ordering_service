@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @Getter : Lombok 라이브러리에서 제공하는 애노테이션으로 getter 메소드를 자동으로 생성
@@ -13,6 +14,7 @@ import lombok.Getter;
  */
 
 @Getter
+@Setter
 @Builder
 public class UserSaveRequest {
 
@@ -34,14 +36,13 @@ public class UserSaveRequest {
     @NotNull(message = "{role.notNull}")
     private Role role;
 
-    public User toEntity(String encodedPassword) {
+    public User toEntity() {
         return User.builder()
                 .loginId(this.loginId)
                 .userName(this.userName)
-                .password(encodedPassword)
+                .password(this.password)
                 .phoneNumber(this.phoneNumber)
                 .email(this.email)
-                .role(this.role)
                 .build();
     }
 }

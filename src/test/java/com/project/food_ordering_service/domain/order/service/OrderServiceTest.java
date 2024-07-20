@@ -63,6 +63,7 @@ class OrderServiceTest {
 
     Restaurant savedRestaurant;
 
+
     @BeforeEach
     void setUp() {
         savedUser = TestUtil.savedUser;
@@ -126,15 +127,45 @@ class OrderServiceTest {
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // when,then
+        // when, then
         assertThrows(UserNotFoundException.class, () -> {
             orderService.createOrder(jwtAuthentication, orderRequest);
         });
     }
 
     @Test
-    @DisplayName("주문 상태 전환 성공 테스트")
+    @DisplayName("주문 상태 전환 성공 테스트 : 주문 완료 -> 준비 완료")
     void updateOrderStatusSuccess() {
+        // given
+        Long orderId = 1L;
+        Order order = Order.builder()
+                .id(orderId)
+                .user(savedUser)
+                .restaurant(savedRestaurant)
+                .status(OrderStatus.ORDERED)
+                .build();
+
+        OrderStateRequest orderStateRequest = OrderStateRequest.builder()
+                .status(OrderStatus.PREPARED)
+                .build();
+
+        JwtAuthentication jwtAuthentication = createJwtAuthentication(TestUtil.USER_ID, Role.OWNER);
+
+        // when
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
+
+        Order updatedOrder = orderService.updateOrderStatus(jwtAuthentication, orderId, orderStateRequest);
+
+        // then
+        assertNotNull(updatedOrder);
+        assertEquals(OrderStatus.PREPARED, updatedOrder.getStatus());
+        verify(orderRepository).save(order);
+    }
+
+    @Test
+    @DisplayName("주문 상태 전환 성공 테스트 : 준비 완료 -> 배달 요청")
+    void updateOrderStatusSuccess2() {
         // given
         Long orderId = 1L;
         Order order = Order.builder()

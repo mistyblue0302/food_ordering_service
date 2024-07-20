@@ -60,7 +60,7 @@ public class OrderService {
 
     @Transactional
     public Order updateOrderStatus(JwtAuthentication jwtAuthentication, Long orderId,
-            OrderStateRequest stateRequest) {
+                                   OrderStateRequest stateRequest) {
         if (!jwtAuthentication.getRole().equals(Role.OWNER)) {
             throw new AccessDeniedException("사장님만 배달 상태를 변경할 수 있습니다.");
         }
@@ -68,15 +68,13 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(OrderNotFoundException::new);
 
-        if (order.getStatus() != OrderStatus.PREPARED) {
-            throw new IllegalStateException("주문 상태가 올바르지 않습니다.");
+        if (order.getStatus() == OrderStatus.ORDERED && stateRequest.getStatus() == OrderStatus.PREPARED) {
+            order.updateOrderStatus(OrderStatus.PREPARED);
+        } else if (order.getStatus() == OrderStatus.PREPARED && stateRequest.getStatus() == OrderStatus.DELIVERY_REQUESTED) {
+            order.updateOrderStatus(OrderStatus.DELIVERY_REQUESTED);
+        } else {
+            throw new IllegalStateException("주문 상태 전환이 올바르지 않습니다.");
         }
-
-        if (stateRequest.getStatus() != OrderStatus.DELIVERY_REQUESTED) {
-            throw new IllegalStateException("주문 변경 요청 상태 확인이 필요합니다.");
-        }
-
-        order.updateOrderStatus(stateRequest.getStatus());
         return orderRepository.save(order);
     }
 

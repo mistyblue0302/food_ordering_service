@@ -40,6 +40,9 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    @OneToMany(mappedBy = "order")
+    private List<Delivery> deliveries = new ArrayList<>();
+
     public void updateOrderStatus(OrderStatus orderStatus) {
         this.status = orderStatus;
     }

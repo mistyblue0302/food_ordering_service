@@ -25,11 +25,10 @@ public class DeliveryController {
     @PostMapping("/{orderId}/assign")
     public ResponseEntity<DeliveryResponse> assignDelivery(
             @AuthenticationPrincipal JwtAuthentication jwtAuthentication,
-            @PathVariable Long orderId,
             @RequestBody DeliveryRequest deliveryRequest) {
 
         Long riderId = jwtAuthentication.getId();
-        Delivery delivery = deliveryService.assignDelivery(orderId, riderId, jwtAuthentication);
+        Delivery delivery = deliveryService.assignDelivery(deliveryRequest.getOrderId(), riderId, jwtAuthentication);
         DeliveryResponse deliveryResponse = DeliveryResponse.from(delivery);
 
         return ResponseEntity.ok(deliveryResponse);

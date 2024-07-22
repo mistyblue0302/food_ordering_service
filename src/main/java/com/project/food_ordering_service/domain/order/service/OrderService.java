@@ -69,9 +69,9 @@ public class OrderService {
                 .orElseThrow(OrderNotFoundException::new);
 
         if (order.getStatus() == OrderStatus.ORDERED && stateRequest.getStatus() == OrderStatus.PREPARED) {
-            order.updateOrderStatus(order.getStatus());
+            order.updateOrderStatus(stateRequest.getStatus());
         } else if (order.getStatus() == OrderStatus.PREPARED && stateRequest.getStatus() == OrderStatus.DELIVERY_REQUESTED) {
-            order.updateOrderStatus(order.getStatus());
+            order.updateOrderStatus(stateRequest.getStatus());
         } else {
             throw new IllegalStateException("주문 상태 전환이 올바르지 않습니다.");
         }

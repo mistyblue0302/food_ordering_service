@@ -19,6 +19,4 @@ public class Meta {
 
     @JsonProperty("same_name")
     private SameName sameName;
-
-
 }

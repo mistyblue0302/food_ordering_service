@@ -69,9 +69,9 @@ public class DeliveryService {
         Order order = delivery.getOrder();
 
         if (status == OrderStatus.ONTHEWAY) {
-            delivery.startDelivery();
+            delivery.startDelivery(status);
         } else if (status == OrderStatus.DELIVERED) {
-            delivery.completeDelivery();
+            delivery.completeDelivery(status);
         } else {
             throw new IllegalArgumentException("잘못된 주문 상태입니다.");
         }

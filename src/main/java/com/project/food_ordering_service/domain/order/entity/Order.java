@@ -9,9 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @Entity
 @Table(name = "ORDERS")
@@ -40,8 +37,8 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @OneToMany(mappedBy = "order")
-    private List<Delivery> deliveries = new ArrayList<>();
+    @OneToOne(mappedBy = "order")
+    private Delivery delivery;
 
     public void updateOrderStatus(OrderStatus orderStatus) {
         this.status = orderStatus;

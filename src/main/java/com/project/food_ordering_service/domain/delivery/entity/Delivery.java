@@ -23,11 +23,11 @@ public class Delivery {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "rider_id")
     private User rider;
 
@@ -37,13 +37,13 @@ public class Delivery {
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
-    public void startDelivery() {
+    public void startDelivery(OrderStatus status) {
         this.startedAt = LocalDateTime.now();
-        this.order.updateOrderStatus(OrderStatus.ONTHEWAY);
+        this.order.updateOrderStatus(status);
     }
 
-    public void completeDelivery() {
+    public void completeDelivery(OrderStatus status) {
         this.completedAt = LocalDateTime.now();
-        this.order.updateOrderStatus(OrderStatus.DELIVERED);
+        this.order.updateOrderStatus(status);
     }
 }

@@ -43,6 +43,7 @@ public class UserSaveRequest {
                 .password(this.password)
                 .phoneNumber(this.phoneNumber)
                 .email(this.email)
+                .role(this.role)
                 .build();
     }
 }

@@ -21,7 +21,7 @@ public class SseService {
 
     public SseEmitter connect(Long userId, String lastEventId) {
         SseEmitter emitter = new SseEmitter(TIMEOUT);
-        String id = userId + "_" + System.currentTimeMillis();
+        String id = makeTimeIncludeId(userId);
 
         sendToClient(emitter, id, "connected");
 
@@ -38,15 +38,12 @@ public class SseService {
         });
 
         if (!lastEventId.isEmpty()) {
-            Map<String, Object> events = sseRepository.findAllEventCacheStartWithId(
-                    String.valueOf(userId));
-            events.entrySet().stream()
-                    .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
-                    .forEach(entry -> sendToClient(emitter, entry.getKey(), entry.getValue()));
+            sendLostData(userId, lastEventId, emitter);
         }
 
         return emitter;
     }
+
 
     public void sand(Long userId) {
         String id = String.valueOf(userId);
@@ -58,6 +55,20 @@ public class SseService {
                     sendToClient(emitter, key, "null");
                 }
         );
+    }
+
+    private static String makeTimeIncludeId(Long userId) {
+        String id = userId + "_" + System.currentTimeMillis();
+        return id;
+    }
+
+    
+    private void sendLostData(Long userId, String lastEventId, SseEmitter emitter) {
+        Map<String, Object> events = sseRepository.findAllEventCacheStartWithId(
+                String.valueOf(userId));
+        events.entrySet().stream()
+                .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
+                .forEach(entry -> sendToClient(emitter, entry.getKey(), entry.getValue()));
     }
 
     private static void sendToClient(SseEmitter emitter, String id, Object data) {

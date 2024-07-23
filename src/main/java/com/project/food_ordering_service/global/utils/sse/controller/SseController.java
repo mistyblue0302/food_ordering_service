@@ -1,6 +1,7 @@
-package com.project.food_ordering_service.global.utils.sse;
+package com.project.food_ordering_service.global.utils.sse.controller;
 
 import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
+import com.project.food_ordering_service.global.utils.sse.service.SseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

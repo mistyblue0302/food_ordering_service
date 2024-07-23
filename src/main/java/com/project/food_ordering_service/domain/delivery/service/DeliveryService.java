@@ -86,6 +86,18 @@ public class DeliveryService {
         return delivery;
     }
 
+    @Transactional
+    public void cancelDelivery(Long deliveryId) {
+        Delivery delivery = deliveryRepository.findById(deliveryId)
+                .orElseThrow(DeliveryNotFoundException::new);
+
+        Order order = delivery.getOrder();
+        order.updateOrderStatus(OrderStatus.DELIVERY_REQUESTED);
+
+        deliveryRepository.delete(delivery);
+        orderRepository.save(order);
+    }
+
     @Transactional(readOnly = true)
     public Delivery getDeliveryById(Long deliveryId) {
         return deliveryRepository.findById(deliveryId)

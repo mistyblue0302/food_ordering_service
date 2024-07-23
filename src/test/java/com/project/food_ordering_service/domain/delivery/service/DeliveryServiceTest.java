@@ -148,6 +148,21 @@ class DeliveryServiceTest {
         verify(deliveryRepository).save(updatedDelivery);
     }
 
+    @Test
+    @DisplayName("배달 취소 테스트")
+    void cancelDelivery() {
+        // given
+        when(deliveryRepository.findById(savedDelivery.getId())).thenReturn(Optional.of(savedDelivery));
+
+        // when
+        deliveryService.cancelDelivery(savedDelivery.getId());
+
+        // then
+        assertEquals(OrderStatus.DELIVERY_REQUESTED, savedOrder.getStatus());
+        verify(deliveryRepository).delete(savedDelivery);
+        verify(orderRepository).save(savedOrder);
+    }
+
     private JwtAuthentication createJwtAuthentication(Long userId, Role role) {
         JwtHolder jwtHolder = new JwtHolder(
                 createMockClaims(userId, "testToken", JwtProperties.ACCESS_TOKEN_NAME, role),

@@ -152,6 +152,8 @@ class DeliveryServiceTest {
     @DisplayName("배달 취소 테스트")
     void cancelDelivery() {
         // given
+        savedOrder.updateOrderStatus(OrderStatus.RECEIVED);
+
         when(deliveryRepository.findById(savedDelivery.getId())).thenReturn(Optional.of(savedDelivery));
 
         // when

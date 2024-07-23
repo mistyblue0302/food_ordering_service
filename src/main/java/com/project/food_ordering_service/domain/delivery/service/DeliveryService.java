@@ -86,6 +86,23 @@ public class DeliveryService {
         return delivery;
     }
 
+    @Transactional
+    public void cancelDelivery(Long deliveryId) {
+        Delivery delivery = deliveryRepository.findById(deliveryId)
+                .orElseThrow(DeliveryNotFoundException::new);
+
+        Order order = delivery.getOrder();
+
+        if (order.getStatus() != OrderStatus.RECEIVED) {
+            throw new IllegalStateException("배달 상태가 RECEIVED일 때만 배달을 취소할 수 있습니다.");
+        }
+
+        order.updateOrderStatus(OrderStatus.DELIVERY_REQUESTED);
+
+        deliveryRepository.delete(delivery);
+        orderRepository.save(order);
+    }
+
     @Transactional(readOnly = true)
     public Delivery getDeliveryById(Long deliveryId) {
         return deliveryRepository.findById(deliveryId)

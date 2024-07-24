@@ -34,7 +34,7 @@ public class DeliveryService {
             throw new AccessDeniedException("배달원만 배달을 할 수 있습니다.");
         }
 
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findByIdWithLock(orderId)
                 .orElseThrow(OrderNotFoundException::new);
 
         if (order.getStatus() != OrderStatus.DELIVERY_REQUESTED) {

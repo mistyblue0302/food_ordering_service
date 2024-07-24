@@ -65,8 +65,7 @@ public class OrderService {
             throw new AccessDeniedException("사장님만 배달 상태를 변경할 수 있습니다.");
         }
 
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(OrderNotFoundException::new);
+        Order order = orderRepository.findByIdWithLock(orderId);
 
         if (order.getStatus() == OrderStatus.ORDERED && stateRequest.getStatus() == OrderStatus.PREPARED) {
             order.updateOrderStatus(stateRequest.getStatus());

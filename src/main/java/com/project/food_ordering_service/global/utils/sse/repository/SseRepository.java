@@ -14,26 +14,26 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class SseRepository {
 
     private final Map<String, SseEmitter> emitterMap = new ConcurrentHashMap<>();
-    
+
     private final Map<String, Object> eventCache = new ConcurrentHashMap<>();
 
 
-    public void save(String userId, SseEmitter emitter) {
+    public SseEmitter save(String id, SseEmitter emitter) {
 
-        log.info("Set Emitter to Redis {}({})", userId, emitter);
+        log.info("Set Emitter to Redis {}({})", id, emitter);
         log.info("emitter list size: {}", emitterMap.size());
+        emitterMap.put(id, emitter);
+        return emitter;
 
-        emitterMap.put(userId, emitter);
     }
 
     public void saveEventCache(String emitterId, Object event) {
         eventCache.put(emitterId, event);
     }
 
-    public Map<String, SseEmitter> findAllEmitterStartWithById(String memberId) {
-
+    public Map<String, SseEmitter> findAllEmitterStartWithById(String id) {
         return emitterMap.entrySet().stream()
-                .filter(entry -> entry.getKey().startsWith(memberId))
+                .filter(entry -> entry.getKey().startsWith(id))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     }

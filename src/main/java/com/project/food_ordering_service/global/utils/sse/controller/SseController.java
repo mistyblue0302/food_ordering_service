@@ -20,7 +20,7 @@ public class SseController {
     @GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> connect(
             @AuthenticationPrincipal JwtAuthentication jwtAuthentication,
-            @RequestHeader(value = "LastEventID", required = false, defaultValue = "")
+            @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "")
             String lastEventId
     ) {
         return ResponseEntity.ok(sseService.connect(jwtAuthentication.getId(), lastEventId));

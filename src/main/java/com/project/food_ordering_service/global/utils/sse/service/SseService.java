@@ -14,30 +14,30 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequiredArgsConstructor
 public class SseService {
 
-    private static final long TIMEOUT = 6000 * 1000;
+    private static final long TIMEOUT = 6000 * 10000;
     private static final String DELIVERY_ALARM = "alarm";
 
     private final SseRepository sseRepository;
 
     public SseEmitter connect(Long userId, String lastEventId) {
-        SseEmitter emitter = new SseEmitter(TIMEOUT);
         String id = makeTimeIncludeId(userId);
 
-        sendToClient(emitter, id, "connected");
-
-        sseRepository.save(id, emitter);
+        SseEmitter emitter = sseRepository.save(id, new SseEmitter(TIMEOUT));
+        log.info("Emitter connected with ID: {} for user ID: {}", id, userId);
 
         emitter.onCompletion(() -> {
-            log.info("onCompletion callback");
+            log.info("onCompletion callback for ID: {}", id);
             sseRepository.delete(id);
         });
 
         emitter.onTimeout(() -> {
-            log.info("onTimeout callback");
+            log.info("onTimeout callback for ID: {}", id);
             sseRepository.delete(id);
         });
 
-        if (!lastEventId.isEmpty()) {
+        sendToClient(emitter, id, "connected");
+
+        if (lastEventId != null && !lastEventId.isEmpty()) {
             sendLostData(userId, lastEventId, emitter);
         }
 
@@ -45,14 +45,22 @@ public class SseService {
     }
 
 
-    public void sand(Long userId) {
+    public void sand(Long userId, Object data) {
         String id = String.valueOf(userId);
-
         Map<String, SseEmitter> sseEmitters = sseRepository.findAllEmitterStartWithById(id);
+        if (sseEmitters.isEmpty()) {
+            log.warn("No emitters found for user ID: " + userId);
+        }
+
         sseEmitters.forEach(
                 (key, emitter) -> {
-                    sseRepository.saveEventCache(key, "notification");
-                    sendToClient(emitter, key, "null");
+                    try {
+                        sseRepository.saveEventCache(key, data);
+                        sendToClient(emitter, key, data);
+                    } catch (Exception e) {
+                        sseRepository.delete(id);
+                        throw new SseServerError("sand", e);
+                    }
                 }
         );
     }
@@ -62,7 +70,7 @@ public class SseService {
         return id;
     }
 
-    
+
     private void sendLostData(Long userId, String lastEventId, SseEmitter emitter) {
         Map<String, Object> events = sseRepository.findAllEventCacheStartWithId(
                 String.valueOf(userId));

@@ -39,12 +39,12 @@ public class OrderController {
     }
 
     @PatchMapping("/{orderId}/state")
-    public ResponseEntity<Order> updateOrderStatus(
+    public ResponseEntity<OrderResponse> updateOrderStatus(
             @AuthenticationPrincipal JwtAuthentication jwtAuthentication,
             @PathVariable Long orderId,
             @RequestBody OrderStateRequest stateRequest) {
         Order order = orderService.updateOrderStatus(jwtAuthentication, orderId, stateRequest);
-        return ResponseEntity.ok(order);
+        return ResponseEntity.ok(OrderResponse.getOrderResponse(order).getBody());
     }
 
     @GetMapping

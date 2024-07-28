@@ -24,16 +24,15 @@ import com.project.food_ordering_service.domain.utils.TestUtil;
 import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import com.project.food_ordering_service.global.utils.jwt.JwtHolder;
 import com.project.food_ordering_service.global.utils.jwt.JwtProperties;
+import com.project.food_ordering_service.global.utils.sse.service.SseService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.impl.DefaultClaims;
 import io.jsonwebtoken.impl.DefaultJws;
 import io.jsonwebtoken.impl.DefaultJwsHeader;
-
 import java.util.Date;
 import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,6 +55,9 @@ class OrderServiceTest {
 
     @Mock
     RestaurantRepository restaurantRepository;
+
+    @Mock
+    SseService sseService;
 
     User savedUser;
 
@@ -155,7 +157,8 @@ class OrderServiceTest {
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
         when(orderRepository.save(any(Order.class))).thenReturn(order);
 
-        Order updatedOrder = orderService.updateOrderStatus(jwtAuthentication, orderId, orderStateRequest);
+        Order updatedOrder = orderService.updateOrderStatus(jwtAuthentication, orderId,
+                orderStateRequest);
 
         // then
         assertNotNull(updatedOrder);
@@ -185,7 +188,8 @@ class OrderServiceTest {
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
         when(orderRepository.save(any(Order.class))).thenReturn(order);
 
-        Order updatedOrder = orderService.updateOrderStatus(jwtAuthentication, orderId, orderStateRequest);
+        Order updatedOrder = orderService.updateOrderStatus(jwtAuthentication, orderId,
+                orderStateRequest);
 
         // then
         assertEquals(OrderStatus.DELIVERY_REQUESTED, updatedOrder.getStatus());

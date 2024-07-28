@@ -1,6 +1,7 @@
 package com.project.food_ordering_service.domain.order.service;
 
 import com.project.food_ordering_service.domain.order.dto.OrderRequest;
+import com.project.food_ordering_service.domain.order.dto.OrderResponse;
 import com.project.food_ordering_service.domain.order.dto.OrderStateRequest;
 import com.project.food_ordering_service.domain.order.entity.Order;
 import com.project.food_ordering_service.domain.order.entity.OrderStatus;
@@ -13,6 +14,7 @@ import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.exception.UserNotFoundException;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
 import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
+import com.project.food_ordering_service.global.utils.sse.service.SseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +29,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
+    private final SseService sseService;
 
     @Transactional
     public Order createOrder(JwtAuthentication jwtAuthentication, OrderRequest orderRequest) {
@@ -60,21 +63,23 @@ public class OrderService {
 
     @Transactional
     public Order updateOrderStatus(JwtAuthentication jwtAuthentication, Long orderId,
-                                   OrderStateRequest stateRequest) {
+            OrderStateRequest stateRequest) {
         if (!jwtAuthentication.getRole().equals(Role.OWNER)) {
             throw new AccessDeniedException("사장님만 배달 상태를 변경할 수 있습니다.");
         }
 
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(OrderNotFoundException::new);
-
-        if (order.getStatus() == OrderStatus.ORDERED && stateRequest.getStatus() == OrderStatus.PREPARED) {
+        if (order.getStatus() == OrderStatus.ORDERED
+                && stateRequest.getStatus() == OrderStatus.PREPARED) {
             order.updateOrderStatus(stateRequest.getStatus());
-        } else if (order.getStatus() == OrderStatus.PREPARED && stateRequest.getStatus() == OrderStatus.DELIVERY_REQUESTED) {
+        } else if (order.getStatus() == OrderStatus.PREPARED
+                && stateRequest.getStatus() == OrderStatus.DELIVERY_REQUESTED) {
             order.updateOrderStatus(stateRequest.getStatus());
         } else {
             throw new IllegalStateException("주문 상태 전환이 올바르지 않습니다.");
         }
+        sseService.sand(jwtAuthentication.getId(), OrderResponse.getOrderResponse(order));
         return orderRepository.save(order);
     }
 

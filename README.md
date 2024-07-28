@@ -8,6 +8,7 @@
 - JPA
 - MySQL
 - H2
+- SSE
 - GitHub Actions
 - JaCoCo
 - Swagger

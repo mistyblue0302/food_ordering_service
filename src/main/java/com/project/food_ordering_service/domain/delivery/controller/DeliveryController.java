@@ -5,14 +5,12 @@ import com.project.food_ordering_service.domain.delivery.dto.DeliveryResponse;
 import com.project.food_ordering_service.domain.delivery.dto.DeliveryStatusRequest;
 import com.project.food_ordering_service.domain.delivery.entity.Delivery;
 import com.project.food_ordering_service.domain.delivery.service.DeliveryService;
-import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,11 +22,8 @@ public class DeliveryController {
 
     @PostMapping("/{orderId}/assign")
     public ResponseEntity<DeliveryResponse> assignDelivery(
-            @AuthenticationPrincipal JwtAuthentication jwtAuthentication,
             @RequestBody DeliveryRequest deliveryRequest) {
-
-        Long riderId = jwtAuthentication.getId();
-        Delivery delivery = deliveryService.assignDelivery(deliveryRequest.getOrderId(), riderId, jwtAuthentication);
+        Delivery delivery = deliveryService.assignDelivery(deliveryRequest.getOrderId(), deliveryRequest.getRiderId());
         DeliveryResponse deliveryResponse = DeliveryResponse.from(delivery);
 
         return ResponseEntity.ok(deliveryResponse);
@@ -36,11 +31,9 @@ public class DeliveryController {
 
     @PatchMapping("/{deliveryId}/state")
     public ResponseEntity<DeliveryResponse> updatedDeliveryStatus(
-            @AuthenticationPrincipal JwtAuthentication jwtAuthentication,
             @PathVariable Long deliveryId,
             @RequestBody DeliveryStatusRequest deliveryStatusRequest) {
-
-        Delivery delivery = deliveryService.updateDeliveryStatus(deliveryId, deliveryStatusRequest.getStatus(), jwtAuthentication);
+        Delivery delivery = deliveryService.updateDeliveryStatus(deliveryId, deliveryStatusRequest.getStatus());
 
         return ResponseEntity.ok(DeliveryResponse.from(delivery));
     }

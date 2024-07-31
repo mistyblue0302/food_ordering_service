@@ -5,8 +5,8 @@ import com.project.food_ordering_service.global.annotaion.CheckRole;
 import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import java.nio.file.AccessDeniedException;
 public class RoleCheckAspect {
 
     // @CheckRole 애노테이션이 붙은 메소드가 호출되면 해당 애노테이션의 속성인 requiredRole을 가져와 현재 사용자의 역할과 비교합니다.
-    @Around("execution(@com.project.food_ordering_service.global.annotaion.CheckRole * *(..)) && @annotation(checkRole)")
+    @Before("execution(@com.project.food_ordering_service.global.annotaion.CheckRole * *(..)) && @annotation(checkRole)")
     public Object checkUserRole(ProceedingJoinPoint joinPoint, CheckRole checkRole) throws Throwable {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         JwtAuthentication jwtAuthentication = (JwtAuthentication) authentication.getPrincipal();

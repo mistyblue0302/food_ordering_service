@@ -25,14 +25,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DeliveryServiceTest {
@@ -75,13 +76,11 @@ class DeliveryServiceTest {
     @DisplayName("배달 할당 성공 테스트")
     void assignDeliverySuccess() {
         // given
-        JwtAuthentication jwtAuthentication = createJwtAuthentication(savedRider.getId(), Role.RIDER);
-
         when(orderRepository.findById(savedOrder.getId())).thenReturn(Optional.of(savedOrder));
         when(userRepository.findById(savedRider.getId())).thenReturn(Optional.of(savedRider));
 
         // when
-        Delivery assignedDelivery = deliveryService.assignDelivery(savedOrder.getId(), savedRider.getId(), jwtAuthentication);
+        Delivery assignedDelivery = deliveryService.assignDelivery(savedOrder.getId(), savedRider.getId());
 
         // then
         assertEquals(OrderStatus.RECEIVED, savedOrder.getStatus());
@@ -90,22 +89,9 @@ class DeliveryServiceTest {
     }
 
     @Test
-    @DisplayName("배달 할당 실패 테스트 : 권한이 배달원이 아닐 때")
-    void assignDeliveryFailedDueToPermission() {
-        // given
-        JwtAuthentication jwtAuthentication = createJwtAuthentication(savedRider.getId(), Role.CLIENT);
-
-        // when, then
-        assertThrows(AccessDeniedException.class, () -> {
-            deliveryService.assignDelivery(savedOrder.getId(), savedRider.getId(), jwtAuthentication);
-        });
-    }
-
-    @Test
     @DisplayName("배달 상태 업데이트 성공 테스트 : 배달 중")
     void updateDeliveryStatusToOnTheWay() {
         // given
-        JwtAuthentication jwtAuthentication = createJwtAuthentication(savedRider.getId(), Role.RIDER);
         savedDelivery = Delivery.builder()
                 .id(1L)
                 .order(savedOrder)
@@ -116,7 +102,7 @@ class DeliveryServiceTest {
         when(deliveryRepository.findById(savedDelivery.getId())).thenReturn(Optional.of(savedDelivery));
 
         // when
-        Delivery updatedDelivery = deliveryService.updateDeliveryStatus(savedDelivery.getId(), OrderStatus.ONTHEWAY, jwtAuthentication);
+        Delivery updatedDelivery = deliveryService.updateDeliveryStatus(savedDelivery.getId(), OrderStatus.ONTHEWAY);
 
         // then
         assertEquals(OrderStatus.ONTHEWAY, updatedDelivery.getOrder().getStatus());
@@ -128,7 +114,6 @@ class DeliveryServiceTest {
     @DisplayName("배달 상태 업데이트 성공 테스트 : 배달 완료")
     void updateDeliveryStatusToDelivered() {
         // given
-        JwtAuthentication jwtAuthentication = createJwtAuthentication(savedRider.getId(), Role.RIDER);
         savedDelivery = Delivery.builder()
                 .id(1L)
                 .order(savedOrder)
@@ -140,7 +125,7 @@ class DeliveryServiceTest {
         when(deliveryRepository.findById(savedDelivery.getId())).thenReturn(Optional.of(savedDelivery));
 
         // when
-        Delivery updatedDelivery = deliveryService.updateDeliveryStatus(savedDelivery.getId(), OrderStatus.DELIVERED, jwtAuthentication);
+        Delivery updatedDelivery = deliveryService.updateDeliveryStatus(savedDelivery.getId(), OrderStatus.DELIVERED);
 
         // then
         assertEquals(OrderStatus.DELIVERED, updatedDelivery.getOrder().getStatus());

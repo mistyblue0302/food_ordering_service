@@ -8,15 +8,12 @@ import com.project.food_ordering_service.domain.order.entity.Order;
 import com.project.food_ordering_service.domain.order.entity.OrderStatus;
 import com.project.food_ordering_service.domain.order.exception.OrderNotFoundException;
 import com.project.food_ordering_service.domain.order.repository.OrderRepository;
-import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.exception.UserNotFoundException;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
-import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,11 +26,7 @@ public class DeliveryService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Delivery assignDelivery(Long orderId, Long riderId, JwtAuthentication jwtAuthentication) {
-        if (!jwtAuthentication.getRole().equals(Role.RIDER)) {
-            throw new AccessDeniedException("배달원만 배달을 할 수 있습니다.");
-        }
-
+    public Delivery assignDelivery(Long orderId, Long riderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(OrderNotFoundException::new);
 
@@ -58,11 +51,7 @@ public class DeliveryService {
     }
 
     @Transactional
-    public Delivery updateDeliveryStatus(Long deliveryId, OrderStatus status, JwtAuthentication jwtAuthentication) {
-        if (!jwtAuthentication.getRole().equals(Role.RIDER)) {
-            throw new AccessDeniedException("배달원만 배달 상태를 업데이트할 수 있습니다.");
-        }
-
+    public Delivery updateDeliveryStatus(Long deliveryId, OrderStatus status) {
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(DeliveryNotFoundException::new);
 

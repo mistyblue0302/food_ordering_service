@@ -59,7 +59,7 @@ class DeliveryControllerTest {
                 .rider(new User())
                 .build();
 
-        when(deliveryService.assignDelivery(anyLong(), anyLong(), any())).thenReturn(delivery);
+        when(deliveryService.assignDelivery(anyLong(), anyLong())).thenReturn(delivery);
 
         String token = jwtUtil.createAccessToken(riderId, Role.RIDER);
 

@@ -9,7 +9,6 @@ import com.project.food_ordering_service.domain.order.exception.OrderNotFoundExc
 import com.project.food_ordering_service.domain.order.repository.OrderRepository;
 import com.project.food_ordering_service.domain.restaurant.entity.Restaurant;
 import com.project.food_ordering_service.domain.restaurant.repository.RestaurantRepository;
-import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.exception.UserNotFoundException;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
@@ -18,7 +17,6 @@ import com.project.food_ordering_service.global.utils.sse.service.SseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,12 +31,7 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(JwtAuthentication jwtAuthentication, OrderRequest orderRequest) {
-        if (!jwtAuthentication.getRole().equals(Role.CLIENT)) {
-            throw new AccessDeniedException("고객만 주문할 수 있습니다.");
-        }
-
         Long userId = jwtAuthentication.getId();
-
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
@@ -64,12 +57,9 @@ public class OrderService {
     @Transactional
     public Order updateOrderStatus(JwtAuthentication jwtAuthentication, Long orderId,
             OrderStateRequest stateRequest) {
-        if (!jwtAuthentication.getRole().equals(Role.OWNER)) {
-            throw new AccessDeniedException("사장님만 배달 상태를 변경할 수 있습니다.");
-        }
-
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(OrderNotFoundException::new);
+
         if (order.getStatus() == OrderStatus.ORDERED
                 && stateRequest.getStatus() == OrderStatus.PREPARED) {
             order.updateOrderStatus(stateRequest.getStatus());
@@ -79,6 +69,7 @@ public class OrderService {
         } else {
             throw new IllegalStateException("주문 상태 전환이 올바르지 않습니다.");
         }
+
         sseService.sand(jwtAuthentication.getId(), OrderResponse.getOrderResponse(order));
         return orderRepository.save(order);
     }

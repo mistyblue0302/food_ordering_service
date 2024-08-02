@@ -8,11 +8,9 @@ import com.project.food_ordering_service.domain.order.entity.Order;
 import com.project.food_ordering_service.domain.order.entity.OrderStatus;
 import com.project.food_ordering_service.domain.order.exception.OrderNotFoundException;
 import com.project.food_ordering_service.domain.order.repository.OrderRepository;
-import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.exception.UserNotFoundException;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
-import com.project.food_ordering_service.global.annotaion.CheckRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +26,6 @@ public class DeliveryService {
     private final UserRepository userRepository;
 
     @Transactional
-    @CheckRole(requiredRole = Role.RIDER)
     public Delivery assignDelivery(Long orderId, Long riderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(OrderNotFoundException::new);
@@ -54,7 +51,6 @@ public class DeliveryService {
     }
 
     @Transactional
-    @CheckRole(requiredRole = Role.RIDER)
     public Delivery updateDeliveryStatus(Long deliveryId, OrderStatus status) {
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(DeliveryNotFoundException::new);

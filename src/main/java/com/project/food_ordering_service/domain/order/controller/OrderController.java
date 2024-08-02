@@ -5,6 +5,8 @@ import com.project.food_ordering_service.domain.order.dto.OrderResponse;
 import com.project.food_ordering_service.domain.order.dto.OrderStateRequest;
 import com.project.food_ordering_service.domain.order.entity.Order;
 import com.project.food_ordering_service.domain.order.service.OrderService;
+import com.project.food_ordering_service.domain.user.entity.Role;
+import com.project.food_ordering_service.global.annotaion.CheckRole;
 import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,6 +31,7 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    @CheckRole(requiredRole = Role.CLIENT)
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(
             @AuthenticationPrincipal JwtAuthentication jwtAuthentication,
@@ -38,6 +41,7 @@ public class OrderController {
         return OrderResponse.getOrderResponse(order);
     }
 
+    @CheckRole(requiredRole = Role.OWNER)
     @PatchMapping("/{orderId}/state")
     public ResponseEntity<OrderResponse> updateOrderStatus(
             @AuthenticationPrincipal JwtAuthentication jwtAuthentication,

@@ -9,11 +9,9 @@ import com.project.food_ordering_service.domain.order.exception.OrderNotFoundExc
 import com.project.food_ordering_service.domain.order.repository.OrderRepository;
 import com.project.food_ordering_service.domain.restaurant.entity.Restaurant;
 import com.project.food_ordering_service.domain.restaurant.repository.RestaurantRepository;
-import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.exception.UserNotFoundException;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
-import com.project.food_ordering_service.global.annotaion.CheckRole;
 import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import com.project.food_ordering_service.global.utils.sse.service.SseService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +30,6 @@ public class OrderService {
     private final SseService sseService;
 
     @Transactional
-    @CheckRole(requiredRole = Role.CLIENT)
     public Order createOrder(JwtAuthentication jwtAuthentication, OrderRequest orderRequest) {
         Long userId = jwtAuthentication.getId();
         User user = userRepository.findById(userId)
@@ -58,7 +55,6 @@ public class OrderService {
     }
 
     @Transactional
-    @CheckRole(requiredRole = Role.OWNER)
     public Order updateOrderStatus(JwtAuthentication jwtAuthentication, Long orderId,
             OrderStateRequest stateRequest) {
         Order order = orderRepository.findById(orderId)

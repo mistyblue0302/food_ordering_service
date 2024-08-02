@@ -5,6 +5,8 @@ import com.project.food_ordering_service.domain.delivery.dto.DeliveryResponse;
 import com.project.food_ordering_service.domain.delivery.dto.DeliveryStatusRequest;
 import com.project.food_ordering_service.domain.delivery.entity.Delivery;
 import com.project.food_ordering_service.domain.delivery.service.DeliveryService;
+import com.project.food_ordering_service.domain.user.entity.Role;
+import com.project.food_ordering_service.global.annotaion.CheckRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ public class DeliveryController {
 
     private final DeliveryService deliveryService;
 
+    @CheckRole(requiredRole = Role.RIDER)
     @PostMapping("/{orderId}/assign")
     public ResponseEntity<DeliveryResponse> assignDelivery(
             @RequestBody DeliveryRequest deliveryRequest) {
@@ -29,6 +32,7 @@ public class DeliveryController {
         return ResponseEntity.ok(deliveryResponse);
     }
 
+    @CheckRole(requiredRole = Role.RIDER)
     @PatchMapping("/{deliveryId}/state")
     public ResponseEntity<DeliveryResponse> updatedDeliveryStatus(
             @PathVariable Long deliveryId,

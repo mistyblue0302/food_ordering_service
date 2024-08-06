@@ -5,6 +5,11 @@ spring:
     username: root
     password: 1215
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
   jpa:
     show-sql: true
     # hibernate Mysql 설정
@@ -12,7 +17,7 @@ spring:
 
     # DB의 고유 기능 사용 가능
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
     # SQL의 가독성 높임(JPA 구현체인 Hibernate 동작)
     properties:
@@ -22,6 +27,6 @@ kakao:
   secret: a7a2f38c20deae484401731c080a2117
 
 jwt:
-  access_expiration_time: 3600
+  access_expiration_time: 360036003600
   refresh_expiration_time: 1209600
   secret: 3ff3e0a7b04deb427e630aa85181956bcdbc46249df88454f0a0731302e0df0b82bd1dcac3852474689d517307bafa63a569cf19fae43c38a21b4706c45b1733

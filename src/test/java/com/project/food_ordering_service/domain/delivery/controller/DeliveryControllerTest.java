@@ -65,7 +65,7 @@ class DeliveryControllerTest {
         User customer = User.builder()
                 .loginId("customerId")
                 .userName("customerName")
-                .role(Role.RIDER)
+                .role(Role.CLIENT)
                 .createdAt(LocalDateTime.now())
                 .build();
 

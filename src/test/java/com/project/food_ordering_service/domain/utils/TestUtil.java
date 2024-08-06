@@ -19,6 +19,7 @@ public class TestUtil {
 
     public static final User savedUser = User
             .builder()
+            .id(1L)
             .password(bCryptPasswordEncoder.encode(PASSWORD))
             .phoneNumber(PHONE_NUMBER)
             .role(ROLE_CLIENT)

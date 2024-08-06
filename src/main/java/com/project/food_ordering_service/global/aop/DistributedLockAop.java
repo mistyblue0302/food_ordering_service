@@ -23,7 +23,7 @@ public class DistributedLockAop {
 
     private static final String REDISSON_LOCK_PREFIX = "LOCK:";
 
-    @Around("@annotation( com.project.food_ordering_service.global.annotaion.DistributedLock)")
+    @Around("@annotation(com.project.food_ordering_service.global.annotaion.DistributedLock)")
     public Object lock(final ProceedingJoinPoint joinPoint) throws Throwable {
         Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
         DistributedLock distributedLock = method.getAnnotation(DistributedLock.class);

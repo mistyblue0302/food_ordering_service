@@ -1,15 +1,19 @@
 package com.project.food_ordering_service.domain.restaurant.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RestaurantResponse {
 
-    private final Long id;
+    private Long id;
 
-    private final String name;
+    private String name;
 
-    private final String address;
+    private String address;
 }

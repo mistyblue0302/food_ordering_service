@@ -29,6 +29,11 @@ jobs:
       - name: Set Kakao Secret in Environment Variable
         run: echo "KAKAO_SECRET=${{ secrets.KAKAO_SECRET }}" >> $GITHUB_ENV
 
+      - name: Start Redis
+        uses: supercharge/redis-github-action@1.1.0
+        with:
+          redis-version: 6
+
       - name: Build with Gradle
         env:
           KAKAO_SECRET: ${{ secrets.KAKAO_SECRET }}

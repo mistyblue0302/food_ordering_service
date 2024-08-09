@@ -8,6 +8,11 @@ spring:
   jpa:
     show-sql: true
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
     # DB의 고유 기능 사용 가능
     hibernate:
       ddl-auto: create

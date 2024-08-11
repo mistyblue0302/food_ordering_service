@@ -1,6 +1,7 @@
 package com.project.food_ordering_service.domain.user.entity;
 
 import com.project.food_ordering_service.domain.delivery.entity.Delivery;
+import com.project.food_ordering_service.domain.order.entity.Order;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -65,6 +66,9 @@ public class User {
 
     @Column(name = "modified_by")
     private String modifiedBy;
+
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders = new ArrayList<>();
 
     @OneToMany(mappedBy = "rider")
     private List<Delivery> deliveries = new ArrayList<>();

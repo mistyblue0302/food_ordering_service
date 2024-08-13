@@ -1,5 +1,7 @@
 package com.project.food_ordering_service.domain.user.entity;
 
+import com.project.food_ordering_service.domain.delivery.entity.Delivery;
+import com.project.food_ordering_service.domain.order.entity.Order;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,8 +9,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -61,6 +66,12 @@ public class User {
 
     @Column(name = "modified_by")
     private String modifiedBy;
+
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "rider")
+    private List<Delivery> deliveries = new ArrayList<>();
 
     public void modify(String name, String phoneNumber, String modifiedBy) {
         this.userName = name;

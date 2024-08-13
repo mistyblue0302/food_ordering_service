@@ -14,14 +14,13 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "DELIVERIES")
-@Builder
+//@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Delivery {

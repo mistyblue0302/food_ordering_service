@@ -38,7 +38,7 @@ public class DeliveryService {
                 .orElseThrow(UserNotFoundException::new);
 
         // 예외 처리 나중에 수정
-        if (deliveryRepository.existsByRiderAndOrder_StatusNot(rider, OrderStatus.DELIVERED)) {
+        if (deliveryRepository.existsByRiderAndOrderStatusNot(rider, OrderStatus.DELIVERED)) {
             throw new IllegalStateException("이전 배달을 완료하지 못했습니다");
         }
 
@@ -60,8 +60,6 @@ public class DeliveryService {
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(DeliveryNotFoundException::new);
 
-//        Order order = delivery.getOrder();
-
         if (status == OrderStatus.ONTHEWAY) {
             delivery.startDelivery(status);
         } else if (status == OrderStatus.DELIVERED) {
@@ -71,11 +69,6 @@ public class DeliveryService {
         }
 
         deliveryRepository.save(delivery);
-
-//        if (status == OrderStatus.DELIVERED) {
-//            order.updateOrderStatus(OrderStatus.DELIVERED);
-//            orderRepository.save(order);
-//        }
 
         return delivery;
     }

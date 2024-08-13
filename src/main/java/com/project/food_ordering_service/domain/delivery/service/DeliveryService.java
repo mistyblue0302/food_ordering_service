@@ -2,6 +2,7 @@ package com.project.food_ordering_service.domain.delivery.service;
 
 import com.project.food_ordering_service.domain.delivery.dto.DeliveryResponse;
 import com.project.food_ordering_service.domain.delivery.entity.Delivery;
+import com.project.food_ordering_service.domain.delivery.exception.DeliverArgumentException;
 import com.project.food_ordering_service.domain.delivery.exception.DeliveryNotFoundException;
 import com.project.food_ordering_service.domain.delivery.repository.DeliveryRepository;
 import com.project.food_ordering_service.domain.order.entity.Order;
@@ -65,7 +66,7 @@ public class DeliveryService {
         } else if (status == OrderStatus.DELIVERED) {
             delivery.completeDelivery(status);
         } else {
-            throw new IllegalArgumentException("잘못된 주문 상태입니다.");
+            throw new DeliverArgumentException("잘못된 주문 상태입니다.");
         }
 
         deliveryRepository.save(delivery);

@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
 
-    boolean existsByRiderAndOrder_StatusNot(User rider, OrderStatus status);
+    boolean existsByRiderAndOrderStatusNot(User rider, OrderStatus status);
 }

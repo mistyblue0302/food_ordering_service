@@ -1,8 +1,9 @@
 package com.project.food_ordering_service.domain.delivery.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.food_ordering_service.domain.delivery.dto.DeliveryRequest;
 import com.project.food_ordering_service.domain.delivery.repository.DeliveryRepository;
 import com.project.food_ordering_service.domain.delivery.service.DeliveryService;
@@ -15,6 +16,7 @@ import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
 import com.project.food_ordering_service.global.utils.jwt.JwtUtil;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +26,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.time.LocalDateTime;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -102,7 +100,7 @@ class DeliveryControllerTest {
         String token = jwtUtil.createAccessToken(rider.getId(), Role.RIDER);
 
         // when
-        mockMvc.perform(post("/deliveries/{orderId}/assign", order.getId())
+        mockMvc.perform(post("/deliveries/assign", order.getId())
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(deliveryRequest)))

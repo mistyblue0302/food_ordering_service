@@ -2,6 +2,7 @@ package com.project.food_ordering_service.domain.delivery.service;
 
 import com.project.food_ordering_service.domain.delivery.dto.DeliveryResponse;
 import com.project.food_ordering_service.domain.delivery.entity.Delivery;
+import com.project.food_ordering_service.domain.delivery.exception.DeliverArgumentException;
 import com.project.food_ordering_service.domain.delivery.exception.DeliveryNotFoundException;
 import com.project.food_ordering_service.domain.delivery.repository.DeliveryRepository;
 import com.project.food_ordering_service.domain.order.entity.Order;
@@ -38,7 +39,7 @@ public class DeliveryService {
                 .orElseThrow(UserNotFoundException::new);
 
         // 예외 처리 나중에 수정
-        if (deliveryRepository.existsByRiderAndOrder_StatusNot(rider, OrderStatus.DELIVERED)) {
+        if (deliveryRepository.existsByRiderAndOrderStatusNot(rider, OrderStatus.DELIVERED)) {
             throw new IllegalStateException("이전 배달을 완료하지 못했습니다");
         }
 
@@ -60,22 +61,15 @@ public class DeliveryService {
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(DeliveryNotFoundException::new);
 
-//        Order order = delivery.getOrder();
-
         if (status == OrderStatus.ONTHEWAY) {
             delivery.startDelivery(status);
         } else if (status == OrderStatus.DELIVERED) {
             delivery.completeDelivery(status);
         } else {
-            throw new IllegalArgumentException("잘못된 주문 상태입니다.");
+            throw new DeliverArgumentException("잘못된 주문 상태입니다.");
         }
 
         deliveryRepository.save(delivery);
-
-//        if (status == OrderStatus.DELIVERED) {
-//            order.updateOrderStatus(OrderStatus.DELIVERED);
-//            orderRepository.save(order);
-//        }
 
         return delivery;
     }

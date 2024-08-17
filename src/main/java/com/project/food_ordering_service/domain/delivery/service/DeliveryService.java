@@ -7,11 +7,12 @@ import com.project.food_ordering_service.domain.delivery.exception.DeliveryNotFo
 import com.project.food_ordering_service.domain.delivery.repository.DeliveryRepository;
 import com.project.food_ordering_service.domain.order.entity.Order;
 import com.project.food_ordering_service.domain.order.entity.OrderStatus;
-import com.project.food_ordering_service.domain.order.exception.OrderNotFoundException;
 import com.project.food_ordering_service.domain.order.repository.OrderRepository;
 import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.exception.UserNotFoundException;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
+import com.project.food_ordering_service.global.exception.CustomException;
+import com.project.food_ordering_service.global.exception.ErrorInformation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +30,7 @@ public class DeliveryService {
     @Transactional
     public Delivery assignDelivery(Long orderId, Long riderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(OrderNotFoundException::new);
+                .orElseThrow(() -> new CustomException(ErrorInformation.ORDER_NOT_FOUND));
 
         if (order.getStatus() != OrderStatus.DELIVERY_REQUESTED) {
             throw new IllegalStateException("배달 요청 상태가 올바르지 않습니다.");

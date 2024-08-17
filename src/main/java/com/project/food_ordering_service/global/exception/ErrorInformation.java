@@ -8,7 +8,6 @@ public enum ErrorInformation {
 
     // 400
     REQUEST_VALIDATION_FAIL(HttpStatus.BAD_REQUEST, "유효한 요청 값이 아닙니다."),
-    WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
 
     //403
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한 오류입니다."),

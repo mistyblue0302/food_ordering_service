@@ -36,7 +36,7 @@ public class AuthService {
                 .orElseThrow(() -> new CustomException(ErrorInformation.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new CustomException(ErrorInformation.WRONG_PASSWORD);
+            throw new CustomException(ErrorInformation.REQUEST_VALIDATION_FAIL);
         }
 
         return createLoginResponse(user.getId(), user.getRole());

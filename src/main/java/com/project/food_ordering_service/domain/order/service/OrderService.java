@@ -5,13 +5,13 @@ import com.project.food_ordering_service.domain.order.dto.OrderResponse;
 import com.project.food_ordering_service.domain.order.dto.OrderStateRequest;
 import com.project.food_ordering_service.domain.order.entity.Order;
 import com.project.food_ordering_service.domain.order.entity.OrderStatus;
-import com.project.food_ordering_service.domain.order.exception.OrderNotFoundException;
 import com.project.food_ordering_service.domain.order.repository.OrderRepository;
 import com.project.food_ordering_service.domain.restaurant.entity.Restaurant;
 import com.project.food_ordering_service.domain.restaurant.repository.RestaurantRepository;
 import com.project.food_ordering_service.domain.user.entity.User;
-import com.project.food_ordering_service.domain.user.exception.UserNotFoundException;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
+import com.project.food_ordering_service.global.exception.CustomException;
+import com.project.food_ordering_service.global.exception.ErrorInformation;
 import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import com.project.food_ordering_service.global.utils.sse.service.SseService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class OrderService {
     public Order createOrder(JwtAuthentication jwtAuthentication, OrderRequest orderRequest) {
         Long userId = jwtAuthentication.getId();
         User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new CustomException(ErrorInformation.USER_NOT_FOUND));
 
         Restaurant restaurant = Restaurant.builder()
                 .name(orderRequest.getRestaurantRequest().getName())
@@ -56,9 +56,9 @@ public class OrderService {
 
     @Transactional
     public Order updateOrderStatus(JwtAuthentication jwtAuthentication, Long orderId,
-            OrderStateRequest stateRequest) {
+                                   OrderStateRequest stateRequest) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(OrderNotFoundException::new);
+                .orElseThrow(() -> new CustomException(ErrorInformation.ORDER_NOT_FOUND));
 
         if (order.getStatus() == OrderStatus.ORDERED
                 && stateRequest.getStatus() == OrderStatus.PREPARED) {
@@ -67,7 +67,7 @@ public class OrderService {
                 && stateRequest.getStatus() == OrderStatus.DELIVERY_REQUESTED) {
             order.updateOrderStatus(stateRequest.getStatus());
         } else {
-            throw new IllegalStateException("주문 상태 전환이 올바르지 않습니다.");
+            throw new CustomException(ErrorInformation.REQUEST_VALIDATION_FAIL);
         }
 
         sseService.sand(jwtAuthentication.getId(), OrderResponse.getOrderResponse(order));

@@ -18,9 +18,10 @@ import com.project.food_ordering_service.domain.restaurant.entity.Restaurant;
 import com.project.food_ordering_service.domain.restaurant.repository.RestaurantRepository;
 import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.domain.user.entity.User;
-import com.project.food_ordering_service.domain.user.exception.UserNotFoundException;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
 import com.project.food_ordering_service.domain.utils.TestUtil;
+import com.project.food_ordering_service.global.exception.CustomException;
+import com.project.food_ordering_service.global.exception.ErrorInformation;
 import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import com.project.food_ordering_service.global.utils.jwt.JwtHolder;
 import com.project.food_ordering_service.global.utils.jwt.JwtProperties;
@@ -31,8 +32,10 @@ import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.impl.DefaultClaims;
 import io.jsonwebtoken.impl.DefaultJws;
 import io.jsonwebtoken.impl.DefaultJwsHeader;
+
 import java.util.Date;
 import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -130,9 +133,11 @@ class OrderServiceTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // when, then
-        assertThrows(UserNotFoundException.class, () -> {
+        CustomException exception = assertThrows(CustomException.class, () -> {
             orderService.createOrder(jwtAuthentication, orderRequest);
         });
+
+        assertEquals(ErrorInformation.USER_NOT_FOUND.getMessage(), exception.getMessage());
     }
 
     @Test
@@ -215,9 +220,12 @@ class OrderServiceTest {
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
         JwtAuthentication jwtAuthentication = createJwtAuthentication(1L, Role.OWNER);
 
-        assertThrows(IllegalStateException.class, () -> {
+        // when, then
+        CustomException exception = assertThrows(CustomException.class, () -> {
             orderService.updateOrderStatus(jwtAuthentication, orderId, stateRequest);
         });
+
+        assertEquals(ErrorInformation.REQUEST_VALIDATION_FAIL.getMessage(), exception.getMessage());
     }
 
     private JwtAuthentication createJwtAuthentication(Long userId, Role role) {

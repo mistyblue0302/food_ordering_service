@@ -1,15 +1,14 @@
 package com.project.food_ordering_service.domain.auth.service;
 
 import com.project.food_ordering_service.domain.auth.entity.RefreshToken;
-import com.project.food_ordering_service.domain.auth.exception.UnacceptedAuthorizationException;
 import com.project.food_ordering_service.domain.auth.repository.AuthRepository;
 import com.project.food_ordering_service.domain.auth.dto.LoginRequest;
 import com.project.food_ordering_service.domain.auth.dto.LoginResponse;
 import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.domain.user.entity.User;
-import com.project.food_ordering_service.domain.user.exception.UserNotFoundException;
-import com.project.food_ordering_service.domain.user.exception.WrongPasswordException;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
+import com.project.food_ordering_service.global.exception.CustomException;
+import com.project.food_ordering_service.global.exception.ErrorInformation;
 import com.project.food_ordering_service.global.utils.jwt.JwtAuthentication;
 import com.project.food_ordering_service.global.utils.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +33,10 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> new CustomException(ErrorInformation.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new WrongPasswordException();
+            throw new CustomException(ErrorInformation.REQUEST_VALIDATION_FAIL);
         }
 
         return createLoginResponse(user.getId(), user.getRole());
@@ -57,7 +56,7 @@ public class AuthService {
     public LoginResponse reissue(JwtAuthentication jwtAuthentication) {
         // 토큰을 추출하여 이미 로그아웃 처리된 토큰인지 확인
         if (authRepository.existsByToken(jwtAuthentication.getToken())) {
-            throw new UnacceptedAuthorizationException();
+            throw new CustomException(ErrorInformation.ACCESS_DENIED);
         }
 
         // 로그아웃 처리되지 않은 토큰이라면 새로운 엑세스 토큰과 리프레시 토큰을 생성하여 반환

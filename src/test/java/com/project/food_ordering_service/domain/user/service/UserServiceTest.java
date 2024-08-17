@@ -1,15 +1,15 @@
 package com.project.food_ordering_service.domain.user.service;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.*;
 
 import com.project.food_ordering_service.domain.user.dto.UserSaveRequest;
 import com.project.food_ordering_service.domain.user.entity.User;
-import com.project.food_ordering_service.domain.user.exception.DuplicatedEmailException;
-import com.project.food_ordering_service.domain.user.exception.DuplicatedLoginIdException;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
 import com.project.food_ordering_service.domain.utils.TestUtil;
+import com.project.food_ordering_service.global.exception.CustomException;
+import com.project.food_ordering_service.global.exception.ErrorInformation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,10 +43,11 @@ class UserServiceTest {
         given(userRepository.existsByEmail(anyString()))
                 .willReturn(true);
 
-        // when
-        assertThatThrownBy(() -> userService.addUser(createUser()))
-                // then
-                .isInstanceOf(DuplicatedEmailException.class);
+        // when, then
+        CustomException exception = assertThrows(CustomException.class, () ->
+                userService.addUser(createUser())
+        );
+        assertEquals(ErrorInformation.DUPLICATE_MEMBER.getMessage(), exception.getMessage());
     }
 
     @Test
@@ -56,10 +57,11 @@ class UserServiceTest {
         given(userRepository.existsByLoginId(anyString()))
                 .willReturn(true);
 
-        // when
-        assertThatThrownBy(() -> userService.addUser(createUser()))
-                // then
-                .isInstanceOf(DuplicatedLoginIdException.class);
+        // when, then
+        CustomException exception = assertThrows(CustomException.class, () ->
+                userService.addUser(createUser())
+        );
+        assertEquals(ErrorInformation.DUPLICATE_MEMBER.getMessage(), exception.getMessage());
     }
 
     @Test

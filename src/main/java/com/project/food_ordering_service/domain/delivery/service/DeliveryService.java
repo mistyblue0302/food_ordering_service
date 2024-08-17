@@ -2,14 +2,11 @@ package com.project.food_ordering_service.domain.delivery.service;
 
 import com.project.food_ordering_service.domain.delivery.dto.DeliveryResponse;
 import com.project.food_ordering_service.domain.delivery.entity.Delivery;
-import com.project.food_ordering_service.domain.delivery.exception.DeliverArgumentException;
-import com.project.food_ordering_service.domain.delivery.exception.DeliveryNotFoundException;
 import com.project.food_ordering_service.domain.delivery.repository.DeliveryRepository;
 import com.project.food_ordering_service.domain.order.entity.Order;
 import com.project.food_ordering_service.domain.order.entity.OrderStatus;
 import com.project.food_ordering_service.domain.order.repository.OrderRepository;
 import com.project.food_ordering_service.domain.user.entity.User;
-import com.project.food_ordering_service.domain.user.exception.UserNotFoundException;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
 import com.project.food_ordering_service.global.exception.CustomException;
 import com.project.food_ordering_service.global.exception.ErrorInformation;
@@ -33,15 +30,15 @@ public class DeliveryService {
                 .orElseThrow(() -> new CustomException(ErrorInformation.ORDER_NOT_FOUND));
 
         if (order.getStatus() != OrderStatus.DELIVERY_REQUESTED) {
-            throw new IllegalStateException("배달 요청 상태가 올바르지 않습니다.");
+            throw new CustomException(ErrorInformation.REQUEST_VALIDATION_FAIL);
         }
 
         User rider = userRepository.findById(riderId)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new CustomException(ErrorInformation.USER_NOT_FOUND));
 
         // 예외 처리 나중에 수정
         if (deliveryRepository.existsByRiderAndOrderStatusNot(rider, OrderStatus.DELIVERED)) {
-            throw new IllegalStateException("이전 배달을 완료하지 못했습니다");
+            throw new CustomException(ErrorInformation.REQUEST_VALIDATION_FAIL);
         }
 
         order.updateOrderStatus(OrderStatus.RECEIVED);
@@ -60,14 +57,14 @@ public class DeliveryService {
     @Transactional
     public Delivery updateDeliveryStatus(Long deliveryId, OrderStatus status) {
         Delivery delivery = deliveryRepository.findById(deliveryId)
-                .orElseThrow(DeliveryNotFoundException::new);
+                .orElseThrow(() -> new CustomException(ErrorInformation.DELIVERY_NOT_FOUND));
 
         if (status == OrderStatus.ONTHEWAY) {
             delivery.startDelivery(status);
         } else if (status == OrderStatus.DELIVERED) {
             delivery.completeDelivery(status);
         } else {
-            throw new DeliverArgumentException("잘못된 주문 상태입니다.");
+            throw new CustomException(ErrorInformation.REQUEST_VALIDATION_FAIL);
         }
 
         deliveryRepository.save(delivery);
@@ -78,12 +75,12 @@ public class DeliveryService {
     @Transactional
     public void cancelDelivery(Long deliveryId) {
         Delivery delivery = deliveryRepository.findById(deliveryId)
-                .orElseThrow(DeliveryNotFoundException::new);
+                .orElseThrow(() -> new CustomException(ErrorInformation.DELIVERY_NOT_FOUND));
 
         Order order = delivery.getOrder();
 
         if (order.getStatus() != OrderStatus.RECEIVED) {
-            throw new IllegalStateException("배달 상태가 RECEIVED일 때만 배달을 취소할 수 있습니다.");
+            throw new CustomException(ErrorInformation.REQUEST_VALIDATION_FAIL);
         }
 
         order.updateOrderStatus(OrderStatus.DELIVERY_REQUESTED);
@@ -95,7 +92,7 @@ public class DeliveryService {
     @Transactional(readOnly = true)
     public Delivery getDeliveryById(Long deliveryId) {
         return deliveryRepository.findById(deliveryId)
-                .orElseThrow(DeliveryNotFoundException::new);
+                .orElseThrow(() -> new CustomException(ErrorInformation.DELIVERY_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)

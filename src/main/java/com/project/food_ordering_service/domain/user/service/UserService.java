@@ -2,11 +2,10 @@ package com.project.food_ordering_service.domain.user.service;
 
 import com.project.food_ordering_service.domain.user.dto.UserPatchRequest;
 import com.project.food_ordering_service.domain.user.entity.User;
-import com.project.food_ordering_service.domain.user.exception.DuplicatedEmailException;
 import com.project.food_ordering_service.domain.user.dto.UserSaveRequest;
-import com.project.food_ordering_service.domain.user.exception.DuplicatedLoginIdException;
-import com.project.food_ordering_service.domain.user.exception.UserNotFoundException;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
+import com.project.food_ordering_service.global.exception.CustomException;
+import com.project.food_ordering_service.global.exception.ErrorInformation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,11 +26,11 @@ public class UserService {
     @Transactional
     public User addUser(UserSaveRequest userSaveRequest) {
         if (userRepository.existsByEmail(userSaveRequest.getEmail())) {
-            throw new DuplicatedEmailException();
+            throw new CustomException(ErrorInformation.DUPLICATE_MEMBER);
         }
 
         if (userRepository.existsByLoginId(userSaveRequest.getLoginId())) {
-            throw new DuplicatedLoginIdException();
+            throw new CustomException(ErrorInformation.DUPLICATE_MEMBER);
         }
 
         String encodedPassword = passwordEncoder.encode(userSaveRequest.getPassword());
@@ -44,19 +43,19 @@ public class UserService {
     @Transactional(readOnly = true)
     public User findUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> new CustomException(ErrorInformation.USER_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> new CustomException(ErrorInformation.USER_NOT_FOUND));
     }
 
     @Transactional
     public User modifyUser(Long userId, UserPatchRequest userPatchRequest) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> new CustomException(ErrorInformation.USER_NOT_FOUND));
 
         user.modify(userPatchRequest.getUserName(), userPatchRequest.getPhoneNumber(),
                 userPatchRequest.getModifiedBy());

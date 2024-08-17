@@ -10,7 +10,7 @@ public enum ErrorInformation {
     REQUEST_VALIDATION_FAIL(HttpStatus.BAD_REQUEST, "유효한 요청 값이 아닙니다."),
 
     //403
-    AccessDeniedHandler(HttpStatus.FORBIDDEN, "접근 권한 오류입니다."),
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한 오류입니다."),
 
     // 404
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주문입니다."),

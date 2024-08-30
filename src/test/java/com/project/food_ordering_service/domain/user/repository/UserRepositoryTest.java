@@ -3,6 +3,7 @@ package com.project.food_ordering_service.domain.user.repository;
 import com.project.food_ordering_service.domain.delivery.entity.Delivery;
 import com.project.food_ordering_service.domain.order.entity.Order;
 import com.project.food_ordering_service.domain.order.entity.OrderStatus;
+import com.project.food_ordering_service.domain.order.repository.OrderRepository;
 import com.project.food_ordering_service.domain.user.entity.Role;
 import com.project.food_ordering_service.domain.user.entity.User;
 import jakarta.persistence.EntityManager;
@@ -27,10 +28,13 @@ class UserRepositoryTest {
     private UserRepository userRepository;
 
     @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
     private EntityManager entityManager;
 
     @Test
-    @DisplayName("n+1 문제 발생 테스트 : 유저와 주문, 주문과 배달")
+    @DisplayName("n+1 문제 발생 테스트 : 유저와 주문")
     public void test() {
         List<User> users = new ArrayList<>();
         List<Order> orders = new ArrayList<>();
@@ -68,7 +72,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    @DisplayName("n+1 문제 발생 테스트 : 유저와 배달")
+    @DisplayName("n+1 문제 발생 테스트 : 유저(라이더)와 배달")
     public void test2() {
         List<User> riders = new ArrayList<>();
         List<Delivery> deliveries = new ArrayList<>();
@@ -108,6 +112,39 @@ class UserRepositoryTest {
             for (Delivery delivery : user.getDeliveries()) {
                 System.out.println("Delivery : " + delivery.getId());
             }
+        }
+    }
+
+    @Test
+    @DisplayName("n+1 문제 발생 테스트 : 주문과 배달")
+    public void test3() {
+        List<Order> orders = new ArrayList<>();
+
+        for (int i = 1; i <= 2; i++) {
+            Order order = Order.builder()
+                    .customerName("Client " + i)
+                    .status(OrderStatus.DELIVERY_REQUESTED)
+                    .build();
+            orders.add(order);
+            entityManager.persist(order);
+
+
+            Delivery delivery = Delivery.builder()
+                    .order(order)
+                    .startedAt(LocalDateTime.now())
+                    .build();
+
+            entityManager.persist(delivery);
+        }
+
+        entityManager.flush();
+        entityManager.clear();
+
+        List<Order> orderList = orderRepository.findAll();
+
+        for (Order order : orderList) {
+            Delivery delivery = order.getDelivery();
+            System.out.println("Delivery : " + delivery.getId());
         }
     }
 }

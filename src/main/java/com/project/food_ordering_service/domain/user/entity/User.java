@@ -60,10 +60,10 @@ public class User {
     @Column(name = "modified_by")
     private String modifiedBy;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "rider",  fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "rider")
     private List<Delivery> deliveries = new ArrayList<>();
 
     public void modify(String name, String phoneNumber, String modifiedBy) {

@@ -1,5 +1,6 @@
 package com.project.food_ordering_service.domain.user.repository;
 
+import com.project.food_ordering_service.domain.delivery.entity.Delivery;
 import com.project.food_ordering_service.domain.order.entity.Order;
 import com.project.food_ordering_service.domain.order.entity.OrderStatus;
 import com.project.food_ordering_service.domain.user.entity.Role;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +30,7 @@ class UserRepositoryTest {
     private EntityManager entityManager;
 
     @Test
-    @DisplayName("n+1 문제 발생 테스트")
+    @DisplayName("n+1 문제 발생 테스트 : 유저와 주문, 주문과 배달")
     public void test() {
         List<User> users = new ArrayList<>();
         List<Order> orders = new ArrayList<>();
@@ -61,6 +63,50 @@ class UserRepositoryTest {
         for (User user : userList) {
             for (Order order : user.getOrders()) { // 여기서 추가 쿼리 발생 (N+1 문제)
                 System.out.println("Order: " + order.getId());
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("n+1 문제 발생 테스트 : 유저와 배달")
+    public void test2() {
+        List<User> riders = new ArrayList<>();
+        List<Delivery> deliveries = new ArrayList<>();
+
+        for (int i = 1; i <= 2; i++) {
+            User rider = User.builder()
+                    .loginId("rider" + i)
+                    .userName("Rider " + i)
+                    .role(Role.RIDER)
+                    .build();
+            riders.add(rider);
+            entityManager.persist(rider);
+
+            for (int j = 1; j <= 2; j++) {
+                Order order = Order.builder()
+                        .customerName("Client " + ((i - 1) * 2 + j))
+                        .status(OrderStatus.DELIVERY_REQUESTED)
+                        .build();
+                entityManager.persist(order);
+
+                Delivery delivery = Delivery.builder()
+                        .order(order)
+                        .rider(rider)
+                        .startedAt(LocalDateTime.now())
+                        .build();
+                deliveries.add(delivery);
+                entityManager.persist(delivery);
+            }
+        }
+
+        entityManager.flush();
+        entityManager.clear();
+
+        List<User> userList = userRepository.findAll();
+
+        for (User user : userList) {
+            for (Delivery delivery : user.getDeliveries()) {
+                System.out.println("Delivery : " + delivery.getId());
             }
         }
     }

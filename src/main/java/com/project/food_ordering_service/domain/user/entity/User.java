@@ -61,9 +61,11 @@ public class User {
     private String modifiedBy;
 
     @OneToMany(mappedBy = "user")
+    @Builder.Default
     private List<Order> orders = new ArrayList<>();
 
     @OneToMany(mappedBy = "rider")
+    @Builder.Default
     private List<Delivery> deliveries = new ArrayList<>();
 
     public void modify(String name, String phoneNumber, String modifiedBy) {

@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * @Service : 해당 클래스가 비즈니스 로직을 수행하는 서비스 클래스임을 나타내는 애노테이션
  * @RequiredArgsConstructor : final 필드의 생성자를 생성해주는 애노테이션
@@ -61,5 +63,10 @@ public class UserService {
                 userPatchRequest.getModifiedBy());
 
         return user;
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> getUsersWithOrdersAndDeliveries() {
+        return userRepository.findAllWithOrdersAndDeliveries();
     }
 }

@@ -20,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -74,11 +76,18 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
+    @Transactional(readOnly = true)
     public Page<Order> getOrders(Pageable pageable) {
         return orderRepository.findAll(pageable);
     }
 
+    @Transactional(readOnly = true)
     public Page<Order> getOrdersByUser(Long userId, Pageable pageable) {
         return orderRepository.findByUserId(userId, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Order> getOrdersWithDeliveries() {
+        return orderRepository.findAllWithDeliveries();
     }
 }

@@ -15,8 +15,8 @@ spring:
     redis:
       host: localhost
       port: 6379
+
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create # 실행시마다 테이블 자동 생성
     # SQL의 가독성 높임(JPA 구현체인 Hibernate 동작)

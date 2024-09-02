@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @RestController : 해당 클래스가 Restful 웹 서비스의 컨트롤러임을 나타내는 애노테이션으로 HTTP 요청과 응답을 처리하는 컨트롤러로 사용
  * @RequiredArgsConstructor : final 필드의 생성자를 생성해주는 애노테이션
@@ -34,6 +36,12 @@ public class UserController {
         User user = userService.findUserById(userId);
         UserGetResponse userGetResponse = UserGetResponse.from(user);
         return ResponseEntity.ok(userGetResponse);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<User>> getUsersWithOrdersAndDeliveries() {
+        List<User> users = userService.getUsersWithOrdersAndDeliveries();
+        return ResponseEntity.ok(users);
     }
 
     @PatchMapping("/{userId}")

@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
@@ -63,6 +65,12 @@ public class OrderController {
             @PathVariable Long userId,
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<Order> orders = orderService.getOrdersByUser(userId, pageable);
+        return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("/with-deliveries")
+    public ResponseEntity<List<Order>> getOrdersWithDeliveries() {
+        List<Order> orders = orderService.getOrdersWithDeliveries();
         return ResponseEntity.ok(orders);
     }
 }

@@ -22,14 +22,14 @@ public class RestaurantController {
 
     @Operation(summary = "주변음식점 불러오기", description = "카카오 주변 음식점 불러오기")
     @Parameters({
-        @Parameter(name = "x", description = "위도", example = "127.01167974212188"),
-        @Parameter(name = "y", description = "경도", example = "37.55705875134064"),
+            @Parameter(name = "x", description = "위도", example = "127.01167974212188"),
+            @Parameter(name = "y", description = "경도", example = "37.55705875134064"),
     })
     @PostMapping("/restaurant")
     public ResponseEntity<KakaoMapApiResponse> getRestaurant(
-        @RequestBody KakaoMapApiRequest kakaoMapApiRequest) {
+            @RequestBody KakaoMapApiRequest kakaoMapApiRequest) {
         ResponseEntity<KakaoMapApiResponse> response = restaurantService.getRestaurant(
-            kakaoMapApiRequest);
+                kakaoMapApiRequest);
         return ResponseEntity.ok().body(response.getBody());
     }
 }

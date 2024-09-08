@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,8 +29,7 @@ public class RestaurantController {
     @PostMapping("/restaurant")
     public ResponseEntity<KakaoMapApiResponse> getRestaurant(
             @RequestBody KakaoMapApiRequest kakaoMapApiRequest) {
-        ResponseEntity<KakaoMapApiResponse> response = restaurantService.getRestaurant(
-                kakaoMapApiRequest);
-        return ResponseEntity.ok().body(response.getBody());
+        KakaoMapApiResponse response = restaurantService.getRestaurant(kakaoMapApiRequest);
+        return ResponseEntity.ok(response);
     }
 }

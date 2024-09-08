@@ -1,6 +1,6 @@
 package com.project.food_ordering_service.domain.restaurant.controller;
 
-import com.project.food_ordering_service.global.api.KakaoMapApi;
+import com.project.food_ordering_service.domain.restaurant.service.RestaurantService;
 import com.project.food_ordering_service.global.dto.request.KakaoMapApiRequest;
 import com.project.food_ordering_service.global.dto.response.KakaoMapApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "레스토랑", description = "Restaurant API")
 public class RestaurantController {
 
-    private final KakaoMapApi kakaoMapApi;
+    private final RestaurantService restaurantService;
 
     @Operation(summary = "주변음식점 불러오기", description = "카카오 주변 음식점 불러오기")
     @Parameters({
@@ -28,7 +28,7 @@ public class RestaurantController {
     @PostMapping("/restaurant")
     public ResponseEntity<KakaoMapApiResponse> getRestaurant(
         @RequestBody KakaoMapApiRequest kakaoMapApiRequest) {
-        ResponseEntity<KakaoMapApiResponse> response = kakaoMapApi.getSearchPlaceByKeyword(
+        ResponseEntity<KakaoMapApiResponse> response = restaurantService.getRestaurant(
             kakaoMapApiRequest);
         return ResponseEntity.ok().body(response.getBody());
     }

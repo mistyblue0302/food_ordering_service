@@ -8,6 +8,7 @@ import com.project.food_ordering_service.domain.order.entity.OrderStatus;
 import com.project.food_ordering_service.domain.order.repository.OrderRepository;
 import com.project.food_ordering_service.domain.user.entity.User;
 import com.project.food_ordering_service.domain.user.repository.UserRepository;
+import com.project.food_ordering_service.global.annotaion.DistributedLock;
 import com.project.food_ordering_service.global.exception.CustomException;
 import com.project.food_ordering_service.global.exception.ErrorInformation;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class DeliveryService {
     private final UserRepository userRepository;
 
     @Transactional
+    @DistributedLock(key = "#orderId")
     public Delivery assignDelivery(Long orderId, Long riderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorInformation.ORDER_NOT_FOUND));

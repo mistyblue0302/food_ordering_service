@@ -5,6 +5,9 @@ spring:
     username: root
     password: 1215
 
+  cache:
+    type: redis
+
   data:
     redis:
       host: localhost
@@ -21,7 +24,8 @@ spring:
 
     # SQL의 가독성 높임(JPA 구현체인 Hibernate 동작)
     properties:
-      hibernate.format_sql: true
+      hibernate:
+        format_sql: false
 
 kakao:
   secret: a7a2f38c20deae484401731c080a2117

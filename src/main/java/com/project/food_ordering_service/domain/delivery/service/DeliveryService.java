@@ -25,7 +25,6 @@ public class DeliveryService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
 
-    @Transactional
     @DistributedLock(key = "#orderId")
     public Delivery assignDelivery(Long orderId, Long riderId) {
         Order order = orderRepository.findById(orderId)

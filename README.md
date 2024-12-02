@@ -9,9 +9,9 @@
 - MySQL
 - H2
 - Redis
-- SSE
 - GitHub Actions
 - JaCoCo
+- SSE
 - Swagger
 
 ## 개발 규칙
